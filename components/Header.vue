@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <div class="logo mr-2">Tabetai</div>
-    <div :class="`searchBar ${!searchBar_flag?'hidden':''}`">
+    <div :class="`searchBar ${!searchBar_flag?'hidden':''}`" v-if="searchBar_hide">
       <div class="input-group input-group-sm">
         <input type="text" class="form-control" placeholder="請輸入關鍵字">
         <div class="input-group-append">
@@ -29,6 +29,7 @@ import { Select, Input, Icon } from "ant-design-vue";
 export default {
   data() {
     return {
+      searchBar_hide: false,
       menu_flag: false
     };
   },
@@ -37,12 +38,21 @@ export default {
     [Icon.name]: Icon
   },
   methods: {
-    // handleChange(value) {
-    //   console.log(`selected ${value}`);
-    // }
+    detectWidth() {
+      if (document.body.clientWidth <= 768) {
+        this.searchBar_hide = false;
+      } else this.searchBar_hide = true;
+    }
   },
   computed: {
     ...mapState(["searchBar_flag"])
+  },
+  mounted() {
+    this.detectWidth();
+    window.addEventListener("resize", this.detectWidth);
+  },
+  destroyed() {
+    window.removeEventListener("resize", this.detectWidth);
   }
 };
 </script>
@@ -121,7 +131,7 @@ export default {
   .menuToggle {
     display: none;
     cursor: pointer;
-    right: 10px;
+    right: 24px;
     position: absolute;
     margin-top: 2.5px;
     @media (max-width: 768px) {
