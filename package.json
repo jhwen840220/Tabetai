@@ -8,10 +8,11 @@
     "_dev": "cross-env NODE_ENV=development nodemon server.js --watch server",
     "dev": "cross-env node -r dotenv/config server.js",
     "build": "nuxt build",
-    "start": "cross-env NODE_ENV=production node server.js",
+    "start": "cross-env PORT=3010 NODE_ENV=production node server.js",
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "animate.css": "^3.7.2",
     "ant-design-vue": "^1.3.13",
     "body-parser": "^1.19.0",
     "bootstrap": "^4.3.1",
@@ -22,7 +23,8 @@
     "node-sass": "^4.12.0",
     "nuxt": "^2.0.0",
     "sass-loader": "^7.1.0",
-    "vue": "^2.6.10"
+    "vue": "^2.6.10",
+    "wowjs": "^1.1.3"
   },
   "devDependencies": {
     "nodemon": "^1.18.9"

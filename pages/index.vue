@@ -7,7 +7,7 @@
             <div class="search-box">
               <div class="search-group">
                 <div class="title">關鍵字</div>
-                <a-input placeholder="請輸入關鍵字" />
+                <a-input placeholder="請輸入店家、食物等關鍵字" />
               </div>
               <div class="search-group">
                 <div class="title">縣市 / 地區</div>
@@ -59,51 +59,70 @@
         </div>
       </div>
     </section>
-    <section
-      :class="`latest-frame container mt-3 ${!latest_flag ? 'noShow' :''}`"
-      id="latest-frame"
-    >
-      <h4>地區精選</h4>
+    <section class="latest-frame container mt-3 wow fadeInUp">
+      <div class="title-block">地區精選</div>
       <div class="row">
-        <div class="col-md-4 p-3" v-for="(item, key) in spots_info" :key="key">
+        <div class="col-6 col-md-3 p-3" v-for="(item, key) in spots_info" :key="key">
           <div class="spot-block">
             <div class="spot-img">
               <img :src="`${item.photo_url}`" alt />
+              <div class="startCount"><a-rate :defaultValue="item.star_count" allowHalf disabled /> {{item.star_count}}</div>
             </div>
             <div class="spot-desc">
-              <h5 class="location">📌 {{item.name}}</h5>
-              <div class="d-flex align-items-center">
-                <div class="userHead"></div>
-                <span>ted pig</span>
-                <span class="timing">7 minutes ago</span>
+              <h5 class="location" :title="item.name">🍽️ {{item.name}}</h5>
+              <div class="d-flex align-items-start">
+                <!-- <div class="userHead"></div> -->
+                📌
+                <span>{{item.address}}</span>
+                <!-- <span>ted pig</span>
+                <span class="timing">7 minutes ago</span> -->
               </div>
             </div>
           </div>
         </div>
       </div>
     </section>
-    <section class="quick-frame container mt-3">
-      <h4>季節精選</h4>
-      <a-icon type="left" @click="slideQuickBlock(false)" />
-      <div class="overflow-hidden">
-        <div class="row" :class="{second: isSlide}">
-          <div class="col-md-3 p-3" v-for="(item, key) in arr8" :key="key">
-            <h4 class="quick-block">我愛夏天 {{key}}</h4>
+    <section class="quick-frame container mt-3 wow fadeInUp">
+      <div class="title-block">美食分類</div>
+      <div class="quick-slide-outer">
+        <div class="row quick-slide-inner" :class="{second: isSlide}">
+          <div class="quick-slide-panel">
+            <div class="col-6 col-md-3 p-3" v-for="(item, key) in classify_info.slice(0,4)" :key="key">
+              <div class="quick-block">
+                <img :src="`${item.photo_url}`" alt />
+                <span>{{item.name}}</span>
+              </div>
+            </div>
+          </div>
+          <div class="quick-slide-panel">
+            <div class="col-6 col-md-3 p-3" v-for="(item, key) in classify_info.slice(4,8)" :key="key">
+              <div class="quick-block">
+                <img :src="`${item.photo_url}`" alt />
+                <span>{{item.name}}</span>
+              </div>
+            </div>
           </div>
         </div>
+        <a-icon class="arrow" type="left" @click="slideQuickBlock(false)" />
+        <a-icon class="arrow" type="right" @click="slideQuickBlock(true)" />
       </div>
-      <a-icon type="right" @click="slideQuickBlock(true)" />
     </section>
   </div>
 </template>
 
 <script>
 import { mapState, mapGetters, mapActions } from "vuex";
-import { Select, Input, Icon } from "ant-design-vue";
-const Option = Select.Option;
-import config from "~/configs";
-const { staticPath } = config;
+import "animate.css";
 
+import { Select, Input, Icon, Rate } from "ant-design-vue";
+const Option = Select.Option;
+if (process.browser) {
+  // 在这里根据环境引入wow.js
+  var { WOW } = require("wowjs");
+}
+// Swipe Up / Down / Left / Right
+var initialX = null;
+var initialY = null;
 export default {
   data() {
     return {
@@ -111,7 +130,6 @@ export default {
       arr3: [0, 1, 2],
       arr4: [0, 1, 2, 3],
       arr6: [0, 1, 2, 3, 4, 5],
-      arr8: [0, 1, 2, 3, 4, 5, 6, 7],
       hashtagList: [
         { tagName: "tainan", tagCount: "105" },
         { tagName: "tainanfoodie", tagCount: "99" },
@@ -138,10 +156,11 @@ export default {
     [Select.name]: Select,
     [Option.name]: Option,
     [Input.name]: Input,
-    [Icon.name]: Icon
+    [Icon.name]: Icon,
+    [Rate.name]: Rate
   },
   computed: {
-    ...mapState(["spots_info"])
+    ...mapState(["spots_info", "classify_info"])
 
     // ...mapState([{ spots_info: "spots_info" }])
     // ...mapState("layoutStore", ["list"])
@@ -160,18 +179,57 @@ export default {
       ) {
         this.update_data({ data: { searchBar_flag: true } });
       } else this.update_data({ data: { searchBar_flag: false } });
+    },
+    startTouch(e) {
+      initialX = e.touches[0].clientX;
+      initialY = e.touches[0].clientY;
+    },
 
-      if (
-        document.body.clientHeight >=
-        document.getElementById("latest-frame").getBoundingClientRect().top
-      ) {
-        this.latest_flag = true;
-      } else this.latest_flag = false;
+    moveTouch(e) {
+      if (initialX === null) {
+        return;
+      }
+
+      if (initialY === null) {
+        return;
+      }
+
+      var currentX = e.touches[0].clientX;
+      var currentY = e.touches[0].clientY;
+
+      var diffX = initialX - currentX;
+      var diffY = initialY - currentY;
+
+      if (Math.abs(diffX) > Math.abs(diffY)) {
+        // sliding horizontally
+        if (diffX > 0) {
+          // swiped left
+          this.slideQuickBlock(true);
+        } else {
+          // swiped right
+          this.slideQuickBlock(false);
+        }
+      }
+      initialX = null;
+      initialY = null;
+
+      e.preventDefault();
     }
   },
   mounted() {
     this.detectView();
     window.addEventListener("scroll", this.detectView);
+    if (process.browser) {
+      // 根據環境實例化 WOW
+      new WOW({
+        live: false,
+        offset: 0
+      }).init();
+    }
+    var container = document.querySelector(".quick-slide-inner");
+
+    container.addEventListener("touchstart", this.startTouch, false);
+    container.addEventListener("touchmove", this.moveTouch, false);
   },
   destroyed() {
     window.removeEventListener("scroll", this.detectView);
@@ -180,6 +238,35 @@ export default {
 </script>
 
 <style lang="scss">
+.title-block {
+  display: inline-block;
+  background: #faacd0;
+  padding-left: 10px;
+  font-weight: 500;
+  font-size: 24px;
+  color: rgba(0, 0, 0, 0.85);
+  filter: drop-shadow(3px 3px 3px rgba(0, 0, 0, 0.3));
+  &:after {
+    content: "";
+    position: absolute;
+    border-style: solid;
+    border-width: 0 25px 36px 0;
+    border-color: transparent transparent #faacd0 transparent;
+  }
+}
+i.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateX(-50%);
+  cursor: pointer;
+  z-index: 5;
+  &.anticon-left {
+    left: 0;
+  }
+  &.anticon-right {
+    left: 100%;
+  }
+}
 /* ---------- 搜尋區塊 ---------- */
 .search-frame {
   background-image: url("~static/coffeeShop.jpg");
@@ -229,15 +316,18 @@ export default {
 .latest-frame {
   transform: translateY(0);
   opacity: 1;
-  transition: all 1s;
+  transition-property: opacity, transform;
+  transition-duration: 1s;
   &.noShow {
     transform: translateY(50%);
     opacity: 0;
   }
   .spot-block {
     background-color: #fff;
-    cursor: pointer;
+    transform: scale(1);
+    transition: transform 0.5s;
     &:hover {
+      transform: scale(1.1);
       .spot-img:after {
         content: "";
         position: absolute;
@@ -249,10 +339,12 @@ export default {
       }
     }
     .spot-img {
-      width: 75%;
-      padding-top: 75%;
+      width: 100%;
+      padding-top: 100%;
       margin: auto;
       position: relative;
+      cursor: pointer;
+
       img {
         position: absolute;
         top: 50%;
@@ -261,6 +353,17 @@ export default {
         width: 100%;
         height: 100%;
         object-fit: contain;
+      }
+      .startCount {
+        position: absolute;
+        padding: 0 8px 5px 8px;
+        right: 10px;
+        bottom: 5px;
+        color: white;
+        border-radius: 16px;
+        text-shadow: 1px 1px 1.5px rgba(0, 0, 0, 0.25);
+        background: rgba(0, 0, 0, 0.375);
+        font-weight: bold;
       }
     }
     .spot-desc {
@@ -290,37 +393,60 @@ export default {
 /* ---------- 季節精選 ---------- */
 .quick-frame {
   position: relative;
-  .row {
-    flex-wrap: nowrap;
-    transition: all 0.7s;
-    &.second {
-      transform: translateX(-100%);
+  .quick-slide-outer {
+    width: 100%;
+    overflow-x: hidden;
+    .quick-slide-inner {
+      width: calc(200% + 60px);
+      display: flex;
+      flex-wrap: nowrap;
+      transform: translate(0);
+      transition: all 0.7s;
+      &.second {
+        transform: translate(-50%);
+      }
+      .quick-slide-panel {
+        width: calc(50% + 30px);
+        display: flex;
+        flex-wrap: wrap;
+      }
     }
   }
   .quick-block {
-    height: 250px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    position: relative;
+    width: 100%;
+    padding-top: 100%;
     background-color: #c8dad3;
     transition: all 0.3s;
     cursor: pointer;
+    font-size: 30px;
+    font-weight: 600;
+    overflow: hidden;
+    color: #fff;
+    text-shadow: black 0.1em 0.1em 0.2em;
     &:hover {
-      color: #fff;
-      background-color: #63707e;
+      img {
+        transform: scale(1.5);
+      }
     }
-  }
-  i {
-    position: absolute;
-    top: 50%;
-    transform: translateX(-50%);
-    cursor: pointer;
-    z-index: 5;
-    &.anticon-left {
+    img {
+      transition: all 0.3s;
+      position: absolute;
+      top: 0;
       left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transform: scale(1);
     }
-    &.anticon-right {
-      left: 100%;
+
+    span {
+      position: absolute;
+      width: 80%;
+      text-align: center;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
     }
   }
 }
