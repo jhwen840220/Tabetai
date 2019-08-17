@@ -209,7 +209,7 @@ export default {
       initialX = null;
       initialY = null;
 
-      e.preventDefault();
+      // e.preventDefault();
     }
   },
   async fetch({ store, params }) {
