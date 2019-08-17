@@ -13,23 +13,18 @@
                 <div class="title">縣市 / 地區</div>
                 <div class="d-flex">
                   <a-select
-                    defaultValue="taipei"
-                    style="width: 50%"
-                    @change="console.log('change!')"
+                    :defaultValue="city[0]"
+                    style="width: 100%"
                   >
-                    <a-select-option value="taipei">taipei</a-select-option>
-                    <a-select-option value="taichung">taichung</a-select-option>
-                    <a-select-option value="tainan">tainan</a-select-option>
-                    <a-select-option value="kaohsiung">kaohsiung</a-select-option>
+                    <a-select-option :value="item" v-for="(item, key) in city" :key="key">{{item}}</a-select-option>
                   </a-select>
-                  <a-select
+                  <!-- <a-select
                     defaultValue="banqiao"
                     style="width: 50%"
-                    @change="console.log('change!')"
                   >
                     <a-select-option value="banqiao">banqiao</a-select-option>
                     <a-select-option value="chungho">chungho</a-select-option>
-                  </a-select>
+                  </a-select> -->
                 </div>
               </div>
               <div class="search-group">
@@ -113,7 +108,7 @@
 <script>
 import { mapState, mapGetters, mapActions } from "vuex";
 import "animate.css";
-
+import { callCityList } from "~/actions/api";
 import { Select, Input, Icon, Rate } from "ant-design-vue";
 const Option = Select.Option;
 if (process.browser) {
@@ -160,7 +155,8 @@ export default {
     [Rate.name]: Rate
   },
   computed: {
-    ...mapState(["spots_info", "classify_info"])
+    ...mapState(["spots_info", "classify_info"]),
+    ...mapState("areaStore", ["city"])
 
     // ...mapState([{ spots_info: "spots_info" }])
     // ...mapState("layoutStore", ["list"])
@@ -215,6 +211,15 @@ export default {
 
       e.preventDefault();
     }
+  },
+  async fetch({ store, params }) {
+    const res = await callCityList();
+    store.commit("update_data", {
+      storeName: "areaStore",
+      data: {
+        city: res.data.data
+      }
+    });
   },
   mounted() {
     this.detectView();
