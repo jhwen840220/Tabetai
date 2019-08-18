@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="home-page">
     <section class="home-search-frame" id="search-frame">
       <div class="container">
         <div class="row justify-content-between">
@@ -54,7 +54,7 @@
         </div>
       </div>
     </section>
-    <section class="home-latest-frame container mt-3 wow fadeInUp">
+    <section class="latest-frame container mt-3 wow fadeInUp">
       <div class="title-block">地區精選</div>
       <div class="row">
         <div class="col-sm-12 col-md-6 col-lg-3 p-3" v-for="(item, key) in spots_info" :key="key">
@@ -77,7 +77,7 @@
         </div>
       </div>
     </section>
-    <section class="home-quick-frame container mt-3 wow fadeInUp">
+    <section class="quick-frame container mt-3 wow fadeInUp" id="firstAnchor">
       <div class="title-block">美食分類</div>
       <div class="quick-slide-outer">
         <div class="row quick-slide-inner" :class="{second: isSlide}">
@@ -125,9 +125,6 @@ export default {
   data() {
     return {
       latest_flag: false,
-      arr3: [0, 1, 2],
-      arr4: [0, 1, 2, 3],
-      arr6: [0, 1, 2, 3, 4, 5],
       hashtagList: [
         { tagName: "tainan", tagCount: "105" },
         { tagName: "tainanfoodie", tagCount: "99" },
@@ -269,205 +266,206 @@ export default {
 </script>
 
 <style lang="scss">
-.title-block {
-  display: inline-block;
-  background: #faacd0;
-  padding-left: 10px;
-  font-weight: 500;
-  font-size: 24px;
-  color: rgba(0, 0, 0, 0.85);
-  filter: drop-shadow(3px 3px 3px rgba(0, 0, 0, 0.3));
-  &:after {
-    content: "";
+.home-page {
+  .title-block {
+    display: inline-block;
+    background: #faacd0;
+    padding-left: 10px;
+    font-weight: 500;
+    font-size: 24px;
+    color: rgba(0, 0, 0, 0.85);
+    filter: drop-shadow(3px 3px 3px rgba(0, 0, 0, 0.3));
+    &:after {
+      content: "";
+      position: absolute;
+      border-style: solid;
+      border-width: 0 25px 36px 0;
+      border-color: transparent transparent #faacd0 transparent;
+    }
+  }
+  i.arrow {
     position: absolute;
-    border-style: solid;
-    border-width: 0 25px 36px 0;
-    border-color: transparent transparent #faacd0 transparent;
-  }
-}
-i.arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateX(-50%);
-  cursor: pointer;
-  z-index: 5;
-  &.anticon-left {
-    left: 0;
-  }
-  &.anticon-right {
-    left: 100%;
-  }
-}
-/* ---------- 搜尋區塊 ---------- */
-.home-search-frame {
-  background-image: url("~static/coffeeShop.jpg");
-  background-size: contain;
-  .row {
-    min-height: 550px;
-  }
-  .search-box {
-    width: 80%;
-    background-color: #c8dad3;
-    padding: 16px;
-  }
-  .search-group {
-    margin-bottom: 16px;
-    .title {
-      margin-bottom: 4px;
+    top: 50%;
+    transform: translateX(-50%);
+    cursor: pointer;
+    z-index: 5;
+    &.anticon-left {
+      left: 0;
+    }
+    &.anticon-right {
+      left: 100%;
     }
   }
-}
-.trend-block {
-  background-color: #fafdcb;
-  // &.top-area {
-  //   min-height: 60%
-  // }
-  // &.bottom-area {
-  //   min-height: 40%
-  // }
-  .trend-header {
-    background-color: #f7b71d;
-    padding: 4px 8px;
-    font-weight: bold;
-  }
-  .item-box {
-    padding: 6px 8px;
-    display: flex;
-    align-items: center;
-    .badge {
-      padding: 4px 6px;
-      margin-left: 6px;
-      border-radius: 12px;
-      background-color: #8f8f8f;
-      color: #fff;
+  /* ---------- 搜尋區塊 ---------- */
+  .home-search-frame {
+    background-image: url("~static/coffeeShop.jpg");
+    background-size: contain;
+    .row {
+      min-height: 550px;
+    }
+    .search-box {
+      width: 80%;
+      background-color: #c8dad3;
+      padding: 16px;
+    }
+    .search-group {
+      margin-bottom: 16px;
+      .title {
+        margin-bottom: 4px;
+      }
     }
   }
-}
-/* ---------- 地區精選 ---------- */
-.home-latest-frame {
-  transform: translateY(0);
-  opacity: 1;
-  transition-property: opacity, transform;
-  transition-duration: 1s;
-  &.noShow {
-    transform: translateY(50%);
-    opacity: 0;
+  .trend-block {
+    background-color: #fafdcb;
+    // &.top-area {
+    //   min-height: 60%
+    // }
+    // &.bottom-area {
+    //   min-height: 40%
+    // }
+    .trend-header {
+      background-color: #f7b71d;
+      padding: 4px 8px;
+      font-weight: bold;
+    }
+    .item-box {
+      padding: 6px 8px;
+      display: flex;
+      align-items: center;
+      .badge {
+        padding: 4px 6px;
+        margin-left: 6px;
+        border-radius: 12px;
+        background-color: #8f8f8f;
+        color: #fff;
+      }
+    }
   }
-  .spot-block {
-    background-color: #fff;
-    transform: scale(1);
-    transition: transform 0.5s;
-    .spot-img {
+  /* ---------- 地區精選 ---------- */
+  .latest-frame {
+    transform: translateY(0);
+    opacity: 1;
+    transition-property: opacity, transform;
+    transition-duration: 1s;
+    &.noShow {
+      transform: translateY(50%);
+      opacity: 0;
+    }
+    .spot-block {
+      background-color: #fff;
+      transform: scale(1);
+      transition: transform 0.5s;
+      .spot-img {
+        width: 100%;
+        padding-top: 100%;
+        margin: auto;
+        position: relative;
+        cursor: pointer;
+
+        img {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
+        .startCount {
+          position: absolute;
+          padding: 0 8px 5px 8px;
+          right: 10px;
+          bottom: 5px;
+          color: white;
+          border-radius: 16px;
+          text-shadow: 1px 1px 1.5px rgba(0, 0, 0, 0.25);
+          background: rgba(0, 0, 0, 0.375);
+          font-weight: bold;
+        }
+      }
+      .spot-desc {
+        padding: 8px 16px;
+        background-color: #c8dad3;
+        .location {
+          margin-bottom: 8px;
+          font-weight: bold;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+        .userHead {
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          background-color: #eee;
+          margin-right: 8px;
+        }
+        .timing {
+          margin-left: auto;
+        }
+      }
+    }
+  }
+
+  /* ---------- 季節精選 ---------- */
+  .quick-frame {
+    position: relative;
+    .quick-slide-outer {
+      width: 100%;
+      overflow-x: hidden;
+      .quick-slide-inner {
+        width: calc(200% + 60px);
+        display: flex;
+        flex-wrap: nowrap;
+        transform: translate(0);
+        transition: all 0.7s;
+        &.second {
+          transform: translate(-50%);
+        }
+        .quick-slide-panel {
+          width: calc(50% + 30px);
+          display: flex;
+          flex-wrap: wrap;
+        }
+      }
+    }
+    .quick-block {
+      position: relative;
       width: 100%;
       padding-top: 100%;
-      margin: auto;
-      position: relative;
+      background-color: #c8dad3;
+      transition: all 0.3s;
       cursor: pointer;
-
+      font-size: 30px;
+      font-weight: 600;
+      overflow: hidden;
+      color: #fff;
+      text-shadow: black 0.1em 0.1em 0.2em;
       img {
+        transition: all 0.3s;
         position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+        top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
         object-fit: contain;
+        transform: scale(1);
       }
-      .startCount {
+
+      span {
         position: absolute;
-        padding: 0 8px 5px 8px;
-        right: 10px;
-        bottom: 5px;
-        color: white;
-        border-radius: 16px;
-        text-shadow: 1px 1px 1.5px rgba(0, 0, 0, 0.25);
-        background: rgba(0, 0, 0, 0.375);
-        font-weight: bold;
-      }
-    }
-    .spot-desc {
-      padding: 8px 16px;
-      background-color: #c8dad3;
-      .location {
-        margin-bottom: 8px;
-        font-weight: bold;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
-      }
-      .userHead {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        background-color: #eee;
-        margin-right: 8px;
-      }
-      .timing {
-        margin-left: auto;
+        width: 80%;
+        text-align: center;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
       }
     }
   }
 }
-
-/* ---------- 季節精選 ---------- */
-.home-quick-frame {
-  position: relative;
-  .quick-slide-outer {
-    width: 100%;
-    overflow-x: hidden;
-    .quick-slide-inner {
-      width: calc(200% + 60px);
-      display: flex;
-      flex-wrap: nowrap;
-      transform: translate(0);
-      transition: all 0.7s;
-      &.second {
-        transform: translate(-50%);
-      }
-      .quick-slide-panel {
-        width: calc(50% + 30px);
-        display: flex;
-        flex-wrap: wrap;
-      }
-    }
-  }
-  .quick-block {
-    position: relative;
-    width: 100%;
-    padding-top: 100%;
-    background-color: #c8dad3;
-    transition: all 0.3s;
-    cursor: pointer;
-    font-size: 30px;
-    font-weight: 600;
-    overflow: hidden;
-    color: #fff;
-    text-shadow: black 0.1em 0.1em 0.2em;
-    img {
-      transition: all 0.3s;
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      transform: scale(1);
-    }
-
-    span {
-      position: absolute;
-      width: 80%;
-      text-align: center;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-  }
-}
-
 /** 僅限在電腦版 */
-.webView {
-  .home-latest-frame {
+.webView .home-page {
+  .latest-frame {
     .spot-block {
       &:hover {
         transform: scale(1.1);
@@ -483,7 +481,7 @@ i.arrow {
       }
     }
   }
-  .home-quick-frame {
+  .quick-frame {
     .quick-block {
       &:hover {
         img {

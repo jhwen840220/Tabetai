@@ -69,7 +69,7 @@
         <GmapMap
         :center="{lat:25.0169639, lng:121.2261834}"
             :zoom="10"
-            map-type-id="terrain"
+            map-type-id="roadmap"
             style="width: 100%; height: 100%">
         </GmapMap>
     </div>

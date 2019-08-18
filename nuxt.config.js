@@ -35,7 +35,11 @@ module.exports = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ["@/plugins/vue2-google-maps", "@/plugins/firebase"],
+  plugins: [
+    "@/plugins/vue2-google-maps",
+    "@/plugins/firebase",
+    { src: "@/plugins/vue-carousel.js", ssr: false }
+  ],
   /*
    ** Nuxt.js dev-modules
    */

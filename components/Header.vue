@@ -5,7 +5,7 @@
       <div class="input-group input-group-sm">
         <input type="text" class="form-control" placeholder="請輸入關鍵字">
         <div class="input-group-append">
-          <button class="btn btn-outline-secondary d-flex align-items-center justidy-content-center" type="button">
+          <button class="btn btn-outline-secondary d-flex align-items-center justidy-content-center" type="button" @click="test()">
             <a-icon class="mx-1" type="search" />
           </button>
         </div>
@@ -42,6 +42,11 @@ export default {
       if (document.body.clientWidth <= 768) {
         this.searchBar_hide = false;
       } else this.searchBar_hide = true;
+    },
+    test(){
+      var element = document.getElementById("firstAnchor"); element.scrollIntoView({behavior: "smooth"});
+
+      // location.href  = '#firstAnchor';
     }
   },
   computed: {
