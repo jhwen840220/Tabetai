@@ -1,6 +1,6 @@
 <template>
   <div class="header">
-    <div class="logo mr-2">Tabetai</div>
+    <nuxt-link to="/"><div class="logo mr-2">Tabetai</div></nuxt-link>
     <div :class="`searchBar ${!searchBar_flag?'hidden':''}`" v-if="searchBar_hide">
       <div class="input-group input-group-sm">
         <input type="text" class="form-control" placeholder="請輸入關鍵字">

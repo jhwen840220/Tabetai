@@ -1,10 +1,9 @@
 <template>
   <div id="mainWrapper"  :class="[device=='web'? 'webView':'mobileView']">
     <Header />
-    <div class="mainArea">
+    <div class="mainArea_noFooter">
       <nuxt />
     </div>
-    <Footer />
   </div>
 </template>
 
@@ -30,9 +29,9 @@ export default {
 </script>
 
 <style lang="scss">
-.mainArea {
+.mainArea_noFooter {
   padding-top: 60px;
-  min-height: calc(100vh - 50px);
+  min-height: 100vh;
 }
 </style>
 

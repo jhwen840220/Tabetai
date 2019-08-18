@@ -1,6 +1,6 @@
 <template>
   <div>
-    <section class="search-frame" id="search-frame">
+    <section class="home-search-frame" id="search-frame">
       <div class="container">
         <div class="row justify-content-between">
           <div class="col-md-6 py-4 d-flex justify-content-center align-items-center">
@@ -54,7 +54,7 @@
         </div>
       </div>
     </section>
-    <section class="latest-frame container mt-3 wow fadeInUp">
+    <section class="home-latest-frame container mt-3 wow fadeInUp">
       <div class="title-block">地區精選</div>
       <div class="row">
         <div class="col-sm-12 col-md-6 col-lg-3 p-3" v-for="(item, key) in spots_info" :key="key">
@@ -77,7 +77,7 @@
         </div>
       </div>
     </section>
-    <section class="quick-frame container mt-3 wow fadeInUp">
+    <section class="home-quick-frame container mt-3 wow fadeInUp">
       <div class="title-block">美食分類</div>
       <div class="quick-slide-outer">
         <div class="row quick-slide-inner" :class="{second: isSlide}">
@@ -113,6 +113,7 @@ import "animate.css";
 import { callCityList } from "~/actions/api";
 import { Select, Input, Icon, Rate } from "ant-design-vue";
 const Option = Select.Option;
+import { db } from "~/plugins/firebase.js";
 if (process.browser) {
   // 在这里根据环境引入wow.js
   var { WOW } = require("wowjs");
@@ -226,6 +227,17 @@ export default {
         });
       }
     })();
+    const that = this;
+    /** 取得spots_info的值 */
+    db.ref("spots_info").once("value", function(snapshot) {
+      var data = snapshot.val();
+      that.update_data({ data: { spots_info: data.data } });
+    });
+    /** 取得classify_info的值 */
+    db.ref("classify_info").once("value", function(snapshot) {
+      var data = snapshot.val();
+      that.update_data({ data: { classify_info: data.data } });
+    });
   },
   mounted() {
     this.detectView();
@@ -279,7 +291,7 @@ i.arrow {
   }
 }
 /* ---------- 搜尋區塊 ---------- */
-.search-frame {
+.home-search-frame {
   background-image: url("~static/coffeeShop.jpg");
   background-size: contain;
   .row {
@@ -324,7 +336,7 @@ i.arrow {
   }
 }
 /* ---------- 地區精選 ---------- */
-.latest-frame {
+.home-latest-frame {
   transform: translateY(0);
   opacity: 1;
   transition-property: opacity, transform;
@@ -390,7 +402,7 @@ i.arrow {
 }
 
 /* ---------- 季節精選 ---------- */
-.quick-frame {
+.home-quick-frame {
   position: relative;
   .quick-slide-outer {
     width: 100%;
@@ -447,7 +459,7 @@ i.arrow {
 
 /** 僅限在電腦版 */
 .webView {
-  .latest-frame {
+  .home-latest-frame {
     .spot-block {
       &:hover {
         transform: scale(1.1);
@@ -463,7 +475,7 @@ i.arrow {
       }
     }
   }
-  .quick-frame {
+  .home-quick-frame {
     .quick-block {
       &:hover {
         img {
