@@ -3,7 +3,7 @@
     <div class="spin_mask" v-if="isFetching">
         <a-spin size="large" />
     </div>
-    <div class="search-frame" :class="{mobile:!map_visible}">
+    <div class="search-frame">
         <div class="search-filter-frame pb-3">
             <div class="search-filter mb-2">
                 <span class="search-filter-title">搜尋條件：</span>
@@ -34,7 +34,7 @@
                 </div>
                 <div class="search-block col-9">關鍵字：<a-input placeholder="請輸入店家、食物等關鍵字" /></div>
                 <div class="offset-1 col-2 d-flex justify-content-end align-items-end">
-                    <div class="btn btn-primary btn-sm" @click="writeToFirestore()">送出</div>
+                    <div class="btn btn-primary btn-sm" style="word-break: keep-all;" @click="writeToFirestore()">送出</div>
                 </div>
             </div>
         </div>
@@ -62,12 +62,13 @@
         </div>
     </div>
     <div class="map-frame" v-if="map_visible">
-        <GmapMap :center="{lat:25.0169639, lng:121.2261834}"
+        <GmapMap
+        :center="{lat:25.0169639, lng:121.2261834}"
             :zoom="10"
             map-type-id="terrain"
             style="width: 100%; height: 100%">
         </GmapMap>
-  </div>
+    </div>
   </div>
 </template>
 
@@ -85,7 +86,7 @@ if (process.browser) {
 export default {
   layout: "default_noFooter",
   data() {
-    return { map_visible: true };
+    return { map_visible: false };
   },
   components: {
     [Select.name]: Select,
@@ -164,7 +165,7 @@ export default {
     width: 600px;
     margin-right: calc(100vw - 600px);
     padding: 2.5rem 2.125rem 0 2.125rem;
-    &.mobile {
+    @media (max-width: 768px) {
       width: 100%;
       margin: 0;
     }
