@@ -13,10 +13,10 @@
                 <div class="title">縣市 / 地區</div>
                 <div class="d-flex">
                   <a-select
-                    :defaultValue="city[0]"
+                    :defaultValue="city.length?city[0].code:''"
                     style="width: 100%"
                   >
-                    <a-select-option :value="item" v-for="(item, key) in city" :key="key">{{item}}</a-select-option>
+                    <a-select-option :value="item.code" v-for="(item, key) in city" :key="key">{{item.name}}</a-select-option>
                   </a-select>
                   <!-- <a-select
                     defaultValue="banqiao"
@@ -83,7 +83,7 @@
         <div class="row quick-slide-inner" :class="{second: isSlide}">
           <div class="quick-slide-panel">
             <div class="col-6 col-md-3 p-3" v-for="(item, key) in classify_info.slice(0,4)" :key="key">
-              <nuxt-link to="/search">
+              <nuxt-link :to="`/search?tag=${item.tag}`">
                 <div class="quick-block">
                   <img :src="`${item.photo_url}`" alt />
                   <span>{{item.name}}</span>
@@ -159,14 +159,15 @@ export default {
   },
   computed: {
     ...mapState(["spots_info", "classify_info"]),
-    ...mapState("areaStore", ["city"])
+    ...mapState("areaList", ["city"])
 
     // ...mapState([{ spots_info: "spots_info" }])
     // ...mapState("layoutStore", ["list"])
   },
   methods: {
     ...mapActions({
-      update_data: "basicAction/update_data"
+      update_data: "basicAction/update_data",
+      getData_byFirebase: "basicAction/getData_byFirebase"
     }),
     slideQuickBlock(change) {
       this.isSlide = change;
@@ -217,26 +218,33 @@ export default {
   },
 
   beforeMount() {
-    // 取得city
-    const getCity = (async () => {
-      const res = await callCityList();
-      if (res.status == 200) {
-        this.update_data({
-          storeName: "areaStore",
-          data: { city: res.data.data }
-        });
-      }
-    })();
     const that = this;
+    // 取得city
+    that.getData_byFirebase({
+      storeName: "areaList",
+      route: "city",
+      listName: "city"
+    });
+
+    // const getCity = (async () => {
+    //   const res = await callCityList();
+    //   if (res.status == 200) {
+    //     this.update_data({
+    //       storeName: "areaList",
+    //       data: { city: res.data.data }
+    //     });
+    //   }
+    // })();
+
     /** 取得spots_info的值 */
-    db.ref("spots_info").once("value", function(snapshot) {
-      var data = snapshot.val();
-      that.update_data({ data: { spots_info: data.data } });
+    that.getData_byFirebase({
+      route: "spots_info",
+      listName: "spots_info"
     });
     /** 取得classify_info的值 */
-    db.ref("classify_info").once("value", function(snapshot) {
-      var data = snapshot.val();
-      that.update_data({ data: { classify_info: data.data } });
+    that.getData_byFirebase({
+      route: "classify_info",
+      listName: "classify_info"
     });
   },
   mounted() {

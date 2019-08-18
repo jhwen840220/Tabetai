@@ -9,28 +9,32 @@
                 <span class="search-filter-title">搜尋條件：</span>
                 <div class="search-filter-tags">
                     <a-tag color="#f50" class="mb-1"><a-icon class="mr-1" type="search" />關鍵字內容</a-tag>
-                    <a-tag color="#2db7f5" class="mb-1"><a-icon class="mr-1" type="compass" />縣市</a-tag>
-                    <a-tag color="#87d068" class="mb-1"><a-icon class="mr-1" type="tags" />食物分類</a-tag>
+                    <a-tag color="#2db7f5" class="mb-1" v-if="search_city">
+                        <a-icon class="mr-1" type="compass" />
+                    {{city.length ? city.filter(item =>item.code == search_city)[0].name : ''}}</a-tag>
+                    <a-tag color="#87d068" class="mb-1" v-if="search_tag">
+                        <a-icon class="mr-1" type="tags" />
+                    {{tag.length ? tag.filter(item =>item.code == search_tag)[0].name : ''}}</a-tag>
                 </div>
             </div>
             <div class="row">
                 <div class="search-block col-6 mb-2">
                     縣市：                  
                     <a-select
-                        :defaultValue="1"
+                        :defaultValue="city.length?city[0].code:''"
                         style="width: 100%"
                     >
-                    <a-select-option :value="1">{{123}}</a-select-option>
-                  </a-select>
+                        <a-select-option :value="item.code" v-for="(item, key) in city" :key="key">{{item.name}}</a-select-option>
+                    </a-select>
                 </div>
                 <div class="search-block col-6 mb-2">
                     分類：                  
                     <a-select
-                        :defaultValue="1"
+                        :defaultValue="tag.length?tag[0].code:''"
                         style="width: 100%"
                     >
-                    <a-select-option :value="1">{{123}}</a-select-option>
-                  </a-select>
+                        <a-select-option :value="item.code" v-for="(item, key) in tag" :key="key">{{item.name}}</a-select-option>
+                    </a-select>
                 </div>
                 <div class="search-block col-9">關鍵字：<a-input placeholder="請輸入店家、食物等關鍵字" /></div>
                 <div class="offset-1 col-2 d-flex justify-content-end align-items-end">
@@ -86,7 +90,11 @@ if (process.browser) {
 export default {
   layout: "default_noFooter",
   data() {
-    return { map_visible: false };
+    return {
+      map_visible: false,
+      search_tag: "",
+      search_city: ""
+    };
   },
   components: {
     [Select.name]: Select,
@@ -98,11 +106,14 @@ export default {
     [Spin.name]: Spin
   },
   computed: {
+    ...mapState("areaList", ["city"]),
+    ...mapState("tagList", ["tag"]),
     ...mapState("searchStore", ["isFetching"])
   },
   methods: {
     ...mapActions({
-      update_data: "basicAction/update_data"
+      update_data: "basicAction/update_data",
+      getData_byFirebase: "basicAction/getData_byFirebase"
     }),
     detectWidth() {
       if (document.body.clientWidth <= 768) {
@@ -121,19 +132,17 @@ export default {
         });
       }, 1000);
       //   db
-      //     .ref("/search_list/tag/taiwan_food")
+      //     .ref("/tag")
       //     .set({
       //       data: [
-      //         {
-      //           id: "0",
-      //           city: "A",
-      //           tag: "taiwan_food",
-      //           name: "貓下去敦北俱樂部",
-      //           photo_url: "spot_2.jpg",
-      //           address: "No, No. 218敦化北路松山區台北市105",
-      //           star_count: 4.5,
-      //           center: { lat: 25.0585149, lng: 121.5467025 }
-      //         },
+      //         { name: "壽司", code: "sushi" },
+      //         { name: "拉麵", code: "ramen" },
+      //         { name: "Buffet", code: "buffet" },
+      //         { name: "台菜", code: "taiwan_food" },
+      //         { name: "火鍋", code: "hotpot" },
+      //         { name: "牛排", code: "steak" },
+      //         { name: "韓式料理", code: "korea_food" },
+      //         { name: "甜點", code: "sweet" }
       //       ]
       //     })
       //     .then(function() {
@@ -145,9 +154,30 @@ export default {
     }
   },
 
+  beforeMount() {
+    const that = this;
+    // 取得city
+    that.getData_byFirebase({
+      storeName: "areaList",
+      route: "city",
+      listName: "city"
+    });
+
+    // 取得tag
+    that.getData_byFirebase({
+      storeName: "tagList",
+      route: "tag",
+      listName: "tag"
+    });
+  },
   mounted() {
     this.detectWidth();
     window.addEventListener("resize", this.detectWidth);
+
+    if (this.$route.query.hasOwnProperty("tag"))
+      this.search_tag = this.$route.query.tag;
+    if (this.$route.query.hasOwnProperty("city"))
+      this.search_city = this.$route.query.city;
   },
   destroyed() {
     window.removeEventListener("resize", this.detectWidth);

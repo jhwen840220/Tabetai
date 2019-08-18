@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import { db } from "~/plugins/firebase.js";
 Vue.use(Vuex);
 
 export const actions = {
@@ -29,6 +30,20 @@ export const actions = {
     } else {
       return await Promise.reject({ text: res.header.desc });
     }
+  },
+
+  getData_byFirebase({ commit }, { storeName, route, listName }) {
+    db.ref(route).once("value", function(snapshot) {
+      var data = snapshot.val();
+      commit(
+        "update_data",
+        {
+          storeName: storeName,
+          data: { [listName]: data.data }
+        },
+        { root: true }
+      );
+    });
   }
 };
 
