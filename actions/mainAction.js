@@ -63,12 +63,19 @@ export function getAPI(url, data, req = false, abort = false) {
   if (cancel) {
     cancel();
   }
-  const dataUrl = url;
+  let protocol = !!req
+    ? req.headers.protocol
+    : process.browser
+    ? location.protocol
+    : "http:";
+  let host = !!req ? req.headers.host : process.browser ? location.host : "";
+  const serverUrl = `${protocol}//${host}/freeApi/`;
+  const dataUrl = serverUrl + url;
   if (!!req && debug) {
     console.log(`---client fetch server ${dataUrl}---`);
   }
   return axios({
-    method: "GET",
+    method: "POST",
     url: dataUrl,
     timeout: 6000, // timeout
     headers: {},
@@ -80,7 +87,7 @@ export function getAPI(url, data, req = false, abort = false) {
   })
     .then(response => {
       if (!!req && response && debug) {
-        // console.log(`------------------res:${url}------------------`)
+        console.log(`------------------res:${url}------------------`);
         // console.log(response)
       }
       return response;

@@ -27,10 +27,10 @@
                   </a-select> -->
                 </div>
               </div>
-              <div class="search-group">
+              <!-- <div class="search-group">
                 <div class="title">標籤 hashtag</div>
                 <a-input placeholder="請輸入 hashtag" />
-              </div>
+              </div> -->
               <div class="text-right">
                 <div class="btn btn-primary btn-sm">送出</div>
               </div>
@@ -57,7 +57,7 @@
     <section class="latest-frame container mt-3 wow fadeInUp">
       <div class="title-block">地區精選</div>
       <div class="row">
-        <div class="col-6 col-md-3 p-3" v-for="(item, key) in spots_info" :key="key">
+        <div class="col-sm-12 col-md-6 col-lg-3 p-3" v-for="(item, key) in spots_info" :key="key">
           <div class="spot-block">
             <div class="spot-img">
               <img :src="`${item.photo_url}`" alt />
@@ -83,10 +83,12 @@
         <div class="row quick-slide-inner" :class="{second: isSlide}">
           <div class="quick-slide-panel">
             <div class="col-6 col-md-3 p-3" v-for="(item, key) in classify_info.slice(0,4)" :key="key">
-              <div class="quick-block">
-                <img :src="`${item.photo_url}`" alt />
-                <span>{{item.name}}</span>
-              </div>
+              <nuxt-link to="/search">
+                <div class="quick-block">
+                  <img :src="`${item.photo_url}`" alt />
+                  <span>{{item.name}}</span>
+                </div>
+              </nuxt-link>
             </div>
           </div>
           <div class="quick-slide-panel">
@@ -212,14 +214,18 @@ export default {
       // e.preventDefault();
     }
   },
-  async fetch({ store, params }) {
-    const res = await callCityList();
-    store.commit("update_data", {
-      storeName: "areaStore",
-      data: {
-        city: res.data.data
+
+  beforeMount() {
+    // 取得city
+    const getCity = (async () => {
+      const res = await callCityList();
+      if (res.status == 200) {
+        this.update_data({
+          storeName: "areaStore",
+          data: { city: res.data.data }
+        });
       }
-    });
+    })();
   },
   mounted() {
     this.detectView();
