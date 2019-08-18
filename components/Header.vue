@@ -77,7 +77,7 @@ export default {
     height: 100%;
     width: 150px;
     font-size: 30px;
-    background: -webkit-linear-gradient(45deg, #ffb422, #d76d77, #4b3201);
+    background-image: -webkit-linear-gradient(45deg, #ffb422, #d76d77, #4b3201);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }

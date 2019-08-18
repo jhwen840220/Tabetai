@@ -331,18 +331,6 @@ i.arrow {
     background-color: #fff;
     transform: scale(1);
     transition: transform 0.5s;
-    &:hover {
-      transform: scale(1.1);
-      .spot-img:after {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(255, 255, 255, 0.5);
-      }
-    }
     .spot-img {
       width: 100%;
       padding-top: 100%;
@@ -429,11 +417,6 @@ i.arrow {
     overflow: hidden;
     color: #fff;
     text-shadow: black 0.1em 0.1em 0.2em;
-    &:hover {
-      img {
-        transform: scale(1.5);
-      }
-    }
     img {
       transition: all 0.3s;
       position: absolute;
@@ -452,6 +435,35 @@ i.arrow {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
+    }
+  }
+}
+
+/** 僅限在電腦版 */
+.webView {
+  .latest-frame {
+    .spot-block {
+      &:hover {
+        transform: scale(1.1);
+        .spot-img:after {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(255, 255, 255, 0.5);
+        }
+      }
+    }
+  }
+  .quick-frame {
+    .quick-block {
+      &:hover {
+        img {
+          transform: scale(1.5);
+        }
+      }
     }
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div id="mainWrapper">
+  <div id="mainWrapper"  :class="[device=='web'? 'webView':'mobileView']">
     <Header />
     <div class="mainArea">
       <nuxt />
@@ -11,11 +11,20 @@
 <script>
 import Header from "~/components/Header.vue";
 import Footer from "~/components/Footer.vue";
+import { getDevice } from "~/helpers";
 
 export default {
+  data() {
+    return {
+      device: ""
+    };
+  },
   components: {
     Header,
     Footer
+  },
+  mounted() {
+    this.device = getDevice();
   }
 };
 </script>
