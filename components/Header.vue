@@ -1,20 +1,28 @@
 <template>
   <div class="header">
-    <nuxt-link to="/"><div class="logo mr-2">Tabetai</div></nuxt-link>
+    <nuxt-link to="/">
+      <div class="logo mr-2">
+        <div>Tabetai</div>
+      </div>
+    </nuxt-link>
     <div :class="`searchBar ${!searchBar_flag?'hidden':''}`" v-if="searchBar_hide">
       <div class="input-group input-group-sm">
-        <input type="text" class="form-control" placeholder="請輸入關鍵字">
+        <input type="text" class="form-control" placeholder="請輸入關鍵字" />
         <div class="input-group-append">
-          <button class="btn btn-outline-secondary d-flex align-items-center justidy-content-center" type="button" @click="test()">
+          <button
+            class="btn btn-outline-secondary d-flex align-items-center justidy-content-center"
+            type="button"
+            @click="test()"
+          >
             <a-icon class="mx-1" type="search" />
           </button>
         </div>
       </div>
     </div>
     <div class="menuToggle" :class="{opened: menu_flag}" @click="menu_flag=!menu_flag">
-      <span/>
-      <span/>
-      <span/>
+      <span />
+      <span />
+      <span />
     </div>
     <div class="btnGroup" :class="{opened: menu_flag}">
       <div class="btn">登入</div>
@@ -43,8 +51,9 @@ export default {
         this.searchBar_hide = false;
       } else this.searchBar_hide = true;
     },
-    test(){
-      var element = document.getElementById("firstAnchor"); element.scrollIntoView({behavior: "smooth"});
+    test() {
+      var element = document.getElementById("firstAnchor");
+      element.scrollIntoView({ behavior: "smooth" });
 
       // location.href  = '#firstAnchor';
     }
@@ -77,16 +86,25 @@ export default {
   .logo {
     display: flex;
     align-items: center;
-    justify-content: center;
+    /* justify-content: center; */
     font-family: "Knewave", cursive;
     height: 100%;
     width: 150px;
     font-size: 30px;
-    background-image: -webkit-linear-gradient(45deg, #ffb422, #d76d77, #4b3201);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: #ffb422; // 沒辦法漸層的瀏覽器
-    -webkit-text-fill-color: transparent;
+    div {
+      display: inline-block;
+      padding: 0 5px;
+      background-image: -webkit-linear-gradient(
+        45deg,
+        #ffb422,
+        #d76d77,
+        #4b3201
+      );
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: #ffb422; // 沒辦法漸層的瀏覽器
+      -webkit-text-fill-color: transparent;
+    }
   }
   .searchBar {
     display: flex;
