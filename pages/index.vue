@@ -58,22 +58,24 @@
       <div class="title-block">地區精選</div>
       <div class="row">
         <div class="col-sm-12 col-md-6 col-lg-3 p-3" v-for="(item, key) in spots_info" :key="key">
-          <div class="spot-block">
-            <div class="spot-img">
-              <img :src="`${item.photo_url}`" alt />
-              <div class="startCount"><a-rate :defaultValue="item.star_count" allowHalf disabled /> {{item.star_count}}</div>
-            </div>
-            <div class="spot-desc">
-              <h5 class="location" :title="item.name">🍽️ {{item.name}}</h5>
-              <div class="d-flex align-items-start">
-                <!-- <div class="userHead"></div> -->
-                📌
-                <span>{{item.address}}</span>
-                <!-- <span>ted pig</span>
-                <span class="timing">7 minutes ago</span> -->
+          <nuxt-link :to="`/detail?r_id=${item.r_id}`">
+            <div class="spot-block">
+              <div class="spot-img">
+                <img :src="`${item.photo_url}`" alt />
+                <div class="startCount"><a-rate :defaultValue="item.star_count" allowHalf disabled /> {{item.star_count}}</div>
+              </div>
+              <div class="spot-desc">
+                <h5 class="location" :title="item.name">🍽️ {{item.name}}</h5>
+                <div class="d-flex align-items-start">
+                  <!-- <div class="userHead"></div> -->
+                  📌
+                  <span>{{item.address}}</span>
+                  <!-- <span>ted pig</span>
+                  <span class="timing">7 minutes ago</span> -->
+                </div>
               </div>
             </div>
-          </div>
+          </nuxt-link>
         </div>
       </div>
     </section>
@@ -355,12 +357,12 @@ export default {
       background-color: #fff;
       transform: scale(1);
       transition: transform 0.5s;
+      cursor: pointer;
       .spot-img {
         width: 100%;
         padding-top: 100%;
         margin: auto;
         position: relative;
-        cursor: pointer;
 
         img {
           position: absolute;
