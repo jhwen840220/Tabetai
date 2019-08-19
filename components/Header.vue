@@ -83,6 +83,7 @@ export default {
     width: 150px;
     font-size: 30px;
     background-image: -webkit-linear-gradient(45deg, #ffb422, #d76d77, #4b3201);
+    background-clip: text;
     -webkit-background-clip: text;
     color: #ffb422; // 沒辦法漸層的瀏覽器
     -webkit-text-fill-color: transparent;
