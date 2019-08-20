@@ -112,10 +112,12 @@
               v-for="(item, key) in classify_info.slice(4,8)"
               :key="key"
             >
-              <div class="quick-block">
-                <img :src="`${item.photo_url}`" alt />
-                <span>{{item.name}}</span>
-              </div>
+              <nuxt-link :to="`/search?tag=${item.tag}`">
+                <div class="quick-block">
+                  <img :src="`${item.photo_url}`" alt />
+                  <span>{{item.name}}</span>
+                </div>
+              </nuxt-link>
             </div>
           </div>
         </div>

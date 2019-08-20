@@ -229,6 +229,12 @@ export default {
         comment: this.comment_value,
         datetime: this.moment().format("YYYY-MM-DD HH:mm:ss")
       };
+
+      if (!postData.author) return alert("請輸入名稱唷QAQ");
+      if (!postData.gender) return alert("請選擇性別唷QAQ");
+      if (!postData.rate) return alert("請選擇評分唷QAQ");
+      if (!postData.comment) return alert("請輸入評論唷QAQ");
+
       /** 送出評論 */
       this.pushData_byFirebase({
         route: `/comment/${this.$route.query.r_id}/data`,
