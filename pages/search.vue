@@ -1,77 +1,93 @@
 <template>
   <div class="search-page">
     <div class="spin_mask" v-if="isFetching">
-        <a-spin size="large" />
+      <a-spin size="large" />
     </div>
     <div class="search-frame">
-        <div class="search-filter-frame pb-3">
-            <div class="search-filter mb-2">
-                <span class="search-filter-title">搜尋條件：</span>
-                <div class="search-filter-tags">
-                    <a-tag color="#f50" class="mb-1"><a-icon class="mr-1" type="search" />關鍵字內容</a-tag>
-                    <a-tag color="#2db7f5" class="mb-1" v-if="search_city">
-                        <a-icon class="mr-1" type="compass" />
-                    {{city.length ? city.filter(item =>item.code == search_city)[0].name : ''}}</a-tag>
-                    <a-tag color="#87d068" class="mb-1" v-if="search_tag">
-                        <a-icon class="mr-1" type="tags" />
-                    {{tag.length ? tag.filter(item =>item.code == search_tag)[0].name : ''}}</a-tag>
-                </div>
-            </div>
-            <div class="row">
-                <div class="search-block col-6 mb-2">
-                    縣市：                  
-                    <a-select
-                        :defaultValue="city.length?city[0].code:''"
-                        style="width: 100%"
-                    >
-                        <a-select-option :value="item.code" v-for="(item, key) in city" :key="key">{{item.name}}</a-select-option>
-                    </a-select>
-                </div>
-                <div class="search-block col-6 mb-2">
-                    分類：                  
-                    <a-select
-                        :defaultValue="tag.length?tag[0].code:''"
-                        style="width: 100%"
-                    >
-                        <a-select-option :value="item.code" v-for="(item, key) in tag" :key="key">{{item.name}}</a-select-option>
-                    </a-select>
-                </div>
-                <div class="search-block col-9">關鍵字：<a-input placeholder="請輸入店家、食物等關鍵字" /></div>
-                <div class="offset-1 col-2 d-flex justify-content-end align-items-end">
-                    <div class="btn btn-primary btn-sm" style="word-break: keep-all;" @click="writeToFirestore()">送出</div>
-                </div>
-            </div>
+      <div class="search-filter-frame pb-3">
+        <div class="search-filter mb-2">
+          <span class="search-filter-title">搜尋條件：</span>
+          <div class="search-filter-tags">
+            <a-tag color="#f50" class="mb-1">
+              <a-icon class="mr-1" type="search" />關鍵字內容
+            </a-tag>
+            <a-tag color="#2db7f5" class="mb-1" v-if="search_city">
+              <a-icon class="mr-1" type="compass" />
+              {{city.length ? city.filter(item =>item.code == search_city)[0].name : ''}}
+            </a-tag>
+            <a-tag color="#87d068" class="mb-1" v-if="search_tag">
+              <a-icon class="mr-1" type="tags" />
+              {{tag.length ? tag.filter(item =>item.code == search_tag)[0].name : ''}}
+            </a-tag>
+          </div>
         </div>
-        <div class="search-result-frame">
-            <div class="row">
-                <div class="col-sm-6 p-3">
-                    <div class="spot-block">
-                        <div class="spot-img">
-                            <img :src="`${'spot_0.jpg'}`" alt />
-                            <div class="startCount"><a-rate :defaultValue="1" allowHalf disabled /> {{1}}</div>
-                        </div>
-                        <div class="spot-desc">
-                            <h5 class="location" :title="'測試'">🍽️ {{'測試'}}</h5>
-                            <div class="d-flex align-items-start">
-                                <!-- <div class="userHead"></div> -->
-                                📌
-                                <span>{{'測試'}}</span>
-                                <!-- <span>ted pig</span>
-                                <span class="timing">7 minutes ago</span> -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="row">
+          <div class="search-block col-6 mb-2">
+            縣市：
+            <a-select :defaultValue="city.length?city[0].code:''" style="width: 100%">
+              <a-select-option
+                :value="item.code"
+                v-for="(item, key) in city"
+                :key="key"
+              >{{item.name}}</a-select-option>
+            </a-select>
+          </div>
+          <div class="search-block col-6 mb-2">
+            分類：
+            <a-select :defaultValue="tag.length?tag[0].code:''" style="width: 100%">
+              <a-select-option
+                :value="item.code"
+                v-for="(item, key) in tag"
+                :key="key"
+              >{{item.name}}</a-select-option>
+            </a-select>
+          </div>
+          <div class="search-block col-9">
+            關鍵字：
+            <a-input placeholder="請輸入店家、食物等關鍵字" />
+          </div>
+          <div class="offset-1 col-2 d-flex justify-content-end align-items-end">
+            <div
+              class="btn btn-primary btn-sm"
+              style="word-break: keep-all;"
+              @click="writeToFirestore()"
+            >送出</div>
+          </div>
         </div>
+      </div>
+      <div class="search-result-frame">
+        <div class="row">
+          <div class="col-sm-6 p-3">
+            <div class="spot-block">
+              <div class="spot-img">
+                <img :src="`${'spot_0.jpg'}`" alt />
+                <div class="startCount">
+                  <a-rate :defaultValue="1" allowHalf disabled />
+                  {{1}}
+                </div>
+              </div>
+              <div class="spot-desc">
+                <h5 class="location" :title="'測試'">🍽️ {{'測試'}}</h5>
+                <div class="d-flex align-items-start">
+                  <!-- <div class="userHead"></div> -->
+                  📌
+                  <span>{{'測試'}}</span>
+                  <!-- <span>ted pig</span>
+                  <span class="timing">7 minutes ago</span>-->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="map-frame" v-if="map_visible">
-        <GmapMap
+      <GmapMap
         :center="{lat:25.0169639, lng:121.2261834}"
-            :zoom="10"
-            map-type-id="roadmap"
-            style="width: 100%; height: 100%">
-        </GmapMap>
+        :zoom="10"
+        map-type-id="roadmap"
+        style="width: 100%; height: 100%"
+      ></GmapMap>
     </div>
   </div>
 </template>
@@ -131,26 +147,20 @@ export default {
           data: { isFetching: false }
         });
       }, 1000);
-      //   db
-      //     .ref("/tag")
-      //     .set({
-      //       data: [
-      //         { name: "壽司", code: "sushi" },
-      //         { name: "拉麵", code: "ramen" },
-      //         { name: "Buffet", code: "buffet" },
-      //         { name: "台菜", code: "taiwan_food" },
-      //         { name: "火鍋", code: "hotpot" },
-      //         { name: "牛排", code: "steak" },
-      //         { name: "韓式料理", code: "korea_food" },
-      //         { name: "甜點", code: "sweet" }
-      //       ]
-      //     })
-      //     .then(function() {
-      //       alert("建立成功");
-      //     })
-      //     .catch(function() {
-      //       alert("伺服器發生錯誤，請稍後再試");
-      //     });
+      // db.ref("/comment/qaz0001")
+      //   .set({
+      //     data: [
+      //       {
+      //         id: "0",
+      //       },
+      //     ]
+      //   })
+      //   .then(function() {
+      //     alert("建立成功");
+      //   })
+      //   .catch(function() {
+      //     alert("伺服器發生錯誤，請稍後再試");
+      //   });
     }
   },
 

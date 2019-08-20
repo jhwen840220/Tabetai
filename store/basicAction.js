@@ -33,17 +33,33 @@ export const actions = {
   },
 
   getData_byFirebase({ commit }, { storeName, route, listName }) {
-    db.ref(route).once("value", function(snapshot) {
+    db.ref(route).once("value", function (snapshot) {
       var data = snapshot.val();
-      commit(
-        "update_data",
-        {
-          storeName: storeName,
-          data: { [listName]: data.data }
-        },
-        { root: true }
-      );
+      if (data) {
+        const dataArr = Object.keys(data.data).reduce((pre = [], item) => {
+          pre.push(data.data[item]);
+          return pre
+        }, [])
+        commit(
+          "update_data",
+          {
+            storeName: storeName,
+            data: { [listName]: dataArr }
+          },
+          { root: true }
+        );
+      }
     });
+  },
+  pushData_byFirebase({ commit }, { route, postData }) {
+    db.ref(route)
+      .push(postData)
+      .then(function () {
+        alert("建立成功");
+      })
+      .catch(function () {
+        alert("伺服器發生錯誤，請稍後再試");
+      });
   }
 };
 

@@ -12,11 +12,12 @@
               <div class="search-group">
                 <div class="title">縣市 / 地區</div>
                 <div class="d-flex">
-                  <a-select
-                    :defaultValue="city.length?city[0].code:''"
-                    style="width: 100%"
-                  >
-                    <a-select-option :value="item.code" v-for="(item, key) in city" :key="key">{{item.name}}</a-select-option>
+                  <a-select :defaultValue="city.length?city[0].code:''" style="width: 100%">
+                    <a-select-option
+                      :value="item.code"
+                      v-for="(item, key) in city"
+                      :key="key"
+                    >{{item.name}}</a-select-option>
                   </a-select>
                   <!-- <a-select
                     defaultValue="banqiao"
@@ -24,13 +25,13 @@
                   >
                     <a-select-option value="banqiao">banqiao</a-select-option>
                     <a-select-option value="chungho">chungho</a-select-option>
-                  </a-select> -->
+                  </a-select>-->
                 </div>
               </div>
               <!-- <div class="search-group">
                 <div class="title">標籤 hashtag</div>
                 <a-input placeholder="請輸入 hashtag" />
-              </div> -->
+              </div>-->
               <div class="text-right">
                 <div class="btn btn-primary btn-sm">送出</div>
               </div>
@@ -58,24 +59,32 @@
       <div class="title-block">地區精選</div>
       <div class="row">
         <div class="col-sm-12 col-md-6 col-lg-3 p-3" v-for="(item, key) in spots_info" :key="key">
-          <nuxt-link :to="`/detail?r_id=${item.r_id}`">
-            <div class="spot-block">
+          <div class="spot-block">
+            <nuxt-link :to="`/detail?r_id=${item.r_id}`">
               <div class="spot-img">
                 <img :src="`${item.photo_url}`" alt />
-                <div class="startCount"><a-rate :defaultValue="item.star_count" allowHalf disabled /> {{item.star_count}}</div>
-              </div>
-              <div class="spot-desc">
-                <h5 class="location" :title="item.name">🍽️ {{item.name}}</h5>
-                <div class="d-flex align-items-start">
-                  <!-- <div class="userHead"></div> -->
-                  📌
-                  <span>{{item.address}}</span>
-                  <!-- <span>ted pig</span>
-                  <span class="timing">7 minutes ago</span> -->
+                <div class="startCount">
+                  <a-rate :defaultValue="item.star_count" allowHalf disabled />
+                  {{item.star_count}}
                 </div>
               </div>
+            </nuxt-link>
+            <div class="spot-desc">
+              <h5 class="location" :title="item.name">
+                🍽️
+                <nuxt-link :to="`/detail?r_id=${item.r_id}`">
+                  <span class="spot-title">{{item.name}}</span>
+                </nuxt-link>
+              </h5>
+              <div class="d-flex align-items-start">
+                <!-- <div class="userHead"></div> -->
+                📌
+                <span>{{item.address}}</span>
+                <!-- <span>ted pig</span>
+                <span class="timing">7 minutes ago</span>-->
+              </div>
             </div>
-          </nuxt-link>
+          </div>
         </div>
       </div>
     </section>
@@ -84,7 +93,11 @@
       <div class="quick-slide-outer">
         <div class="row quick-slide-inner" :class="{second: isSlide}">
           <div class="quick-slide-panel">
-            <div class="col-6 col-md-3 p-3" v-for="(item, key) in classify_info.slice(0,4)" :key="key">
+            <div
+              class="col-6 col-md-3 p-3"
+              v-for="(item, key) in classify_info.slice(0,4)"
+              :key="key"
+            >
               <nuxt-link :to="`/search?tag=${item.tag}`">
                 <div class="quick-block">
                   <img :src="`${item.photo_url}`" alt />
@@ -94,7 +107,11 @@
             </div>
           </div>
           <div class="quick-slide-panel">
-            <div class="col-6 col-md-3 p-3" v-for="(item, key) in classify_info.slice(4,8)" :key="key">
+            <div
+              class="col-6 col-md-3 p-3"
+              v-for="(item, key) in classify_info.slice(4,8)"
+              :key="key"
+            >
               <div class="quick-block">
                 <img :src="`${item.photo_url}`" alt />
                 <span>{{item.name}}</span>
@@ -357,7 +374,6 @@ export default {
       background-color: #fff;
       transform: scale(1);
       transition: transform 0.5s;
-      cursor: pointer;
       .spot-img {
         width: 100%;
         padding-top: 100%;
@@ -388,6 +404,10 @@ export default {
       .spot-desc {
         padding: 8px 16px;
         background-color: #c8dad3;
+        .spot-title {
+          color: initial;
+          cursor: pointer;
+        }
         .location {
           margin-bottom: 8px;
           font-weight: bold;
