@@ -7,12 +7,12 @@
             <div class="search-box">
               <div class="search-group">
                 <div class="title">關鍵字</div>
-                <a-input placeholder="請輸入店家、食物等關鍵字" />
+                <a-input placeholder="請輸入店家、食物等關鍵字" :value="search_key" @change="changeKey" />
               </div>
               <div class="search-group">
                 <div class="title">縣市 / 地區</div>
                 <div class="d-flex">
-                  <a-select :defaultValue="city.length?city[0].code:''" style="width: 100%">
+                  <a-select class="w-100" :value="city_id" @change="selectCity">
                     <a-select-option
                       :value="item.code"
                       v-for="(item, key) in city"
@@ -176,7 +176,7 @@ export default {
     [Rate.name]: Rate
   },
   computed: {
-    ...mapState(["spots_info", "classify_info"]),
+    ...mapState(["spots_info", "classify_info", "city_id", "search_key"]),
     ...mapState("areaList", ["city"])
 
     // ...mapState([{ spots_info: "spots_info" }])
@@ -197,6 +197,13 @@ export default {
       ) {
         this.update_data({ data: { searchBar_flag: true } });
       } else this.update_data({ data: { searchBar_flag: false } });
+    },
+
+    selectCity(value) {
+      this.update_data({ data: { city_id: value } });
+    },
+    changeKey(e) {
+      this.update_data({ data: { search_key: e.target.value } });
     },
     startTouch(e) {
       initialX = e.touches[0].clientX;

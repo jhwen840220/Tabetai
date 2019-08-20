@@ -8,23 +8,23 @@
         <div class="search-filter mb-2">
           <span class="search-filter-title">搜尋條件：</span>
           <div class="search-filter-tags">
-            <a-tag color="#f50" class="mb-1">
-              <a-icon class="mr-1" type="search" />關鍵字內容
+            <a-tag color="#f50" class="mb-1" v-if="final_search_key">
+              <a-icon class="mr-1" type="search" />{{final_search_key}}
             </a-tag>
-            <a-tag color="#2db7f5" class="mb-1" v-if="search_city">
+            <a-tag color="#2db7f5" class="mb-1" v-if="city_id">
               <a-icon class="mr-1" type="compass" />
-              {{city.length ? city.filter(item =>item.code == search_city)[0].name : ''}}
+              {{city.length ? city.filter(item =>item.code == city_id)[0].name : ''}}
             </a-tag>
-            <a-tag color="#87d068" class="mb-1" v-if="search_tag">
+            <a-tag color="#87d068" class="mb-1" v-if="tag_id">
               <a-icon class="mr-1" type="tags" />
-              {{tag.length ? tag.filter(item =>item.code == search_tag)[0].name : ''}}
+              {{tag.length ? tag.filter(item =>item.code == tag_id)[0].name : ''}}
             </a-tag>
           </div>
         </div>
-        <div class="row">
+        <form class="row" @submit="writeToFirestore" >
           <div class="search-block col-6 mb-2">
             縣市：
-            <a-select :defaultValue="city.length?city[0].code:''" style="width: 100%">
+            <a-select :value="search_city" style="width: 100%" @change="(value)=>{changeValue(value,'city')}">
               <a-select-option
                 :value="item.code"
                 v-for="(item, key) in city"
@@ -34,7 +34,7 @@
           </div>
           <div class="search-block col-6 mb-2">
             分類：
-            <a-select :defaultValue="tag.length?tag[0].code:''" style="width: 100%">
+            <a-select :value="search_tag" style="width: 100%" @change="(value)=>{changeValue(value,'tag')}">
               <a-select-option
                 :value="item.code"
                 v-for="(item, key) in tag"
@@ -44,34 +44,37 @@
           </div>
           <div class="search-block col-9">
             關鍵字：
-            <a-input placeholder="請輸入店家、食物等關鍵字" />
+            <a-input placeholder="請輸入店家、食物等關鍵字" :value="search_key" @change="(e)=>{this.search_key = e.target.value}" />
           </div>
           <div class="offset-1 col-2 d-flex justify-content-end align-items-end">
             <div
               class="btn btn-primary btn-sm"
               style="word-break: keep-all;"
-              @click="writeToFirestore()"
-            >送出</div>
+              @click="writeToFirestore">送出
+            </div>
           </div>
-        </div>
+        </form>
       </div>
       <div class="search-result-frame">
-        <div class="row">
-          <div class="col-sm-6 p-3">
+        <div class="row" v-if="search_filter_list.length">
+          <div class="col-sm-6 p-3" v-for="(item, key) in search_filter_list" :key="key">
             <div class="spot-block">
-              <div class="spot-img">
-                <img :src="`${'spot_0.jpg'}`" alt />
-                <div class="startCount">
-                  <a-rate :defaultValue="1" allowHalf disabled />
-                  {{1}}
+              <nuxt-link :to="`/detail?r_id=${item.r_id}`">
+                <div class="spot-img">
+                  <img :src="`${item.photo_url}`" alt />
+                  <div class="startCount">
+                    <a-rate :value="item.star_count" allowHalf disabled />
+                    {{item.star_count}}
+                  </div>
                 </div>
-              </div>
+              </nuxt-link>
               <div class="spot-desc">
-                <h5 class="location" :title="'測試'">🍽️ {{'測試'}}</h5>
+                <h5 class="location" :title="item.name">🍽️ 
+                  <nuxt-link :to="`/detail?r_id=${item.r_id}`"><span class="spot-title">{{item.name}}</span></nuxt-link></h5>
                 <div class="d-flex align-items-start">
                   <!-- <div class="userHead"></div> -->
                   📌
-                  <span>{{'測試'}}</span>
+                  <span>{{item.address}}</span>
                   <!-- <span>ted pig</span>
                   <span class="timing">7 minutes ago</span>-->
                 </div>
@@ -79,15 +82,26 @@
             </div>
           </div>
         </div>
+        <div class="search-result-noData" v-else>目前查無資料唷 ~</div>
       </div>
     </div>
     <div class="map-frame" v-if="map_visible">
       <GmapMap
-        :center="{lat:25.0169639, lng:121.2261834}"
-        :zoom="10"
+        ref="mapRef"
+        :center="center"
+        :zoom="13"
         map-type-id="roadmap"
         style="width: 100%; height: 100%"
-      ></GmapMap>
+      >
+      <GmapMarker
+        :key="index"
+        v-for="(m, index) in search_filter_list"
+        :position="m.center"
+        :clickable="true"
+        :draggable="true"
+        @click="center=m.center"
+      />
+      </GmapMap>
     </div>
   </div>
 </template>
@@ -109,7 +123,9 @@ export default {
     return {
       map_visible: false,
       search_tag: "",
-      search_city: ""
+      search_city: "",
+      search_key: "",
+      center: { lat: 25.0169639, lng: 121.2261834 }
     };
   },
   components: {
@@ -124,7 +140,9 @@ export default {
   computed: {
     ...mapState("areaList", ["city"]),
     ...mapState("tagList", ["tag"]),
-    ...mapState("searchStore", ["isFetching"])
+    ...mapState("searchStore", ["isFetching", "city_id", "tag_id"]),
+    ...mapState("searchStore", { final_search_key: "search_key" }),
+    ...mapGetters("searchStore", ["search_filter_list"])
   },
   methods: {
     ...mapActions({
@@ -136,24 +154,56 @@ export default {
         this.map_visible = false;
       } else this.map_visible = true;
     },
-    async writeToFirestore() {
+    changeValue(value, key) {
+      this[`search_${key}`] = value;
+      let query = { ...this.$route.query };
+      query[key] = value;
+      this.$router.replace({
+        path: "search",
+        query
+      });
+    },
+    async writeToFirestore(e) {
+      if (e) e.preventDefault();
+
       this.update_data({
         storeName: "searchStore",
-        data: { isFetching: true }
+        data: {
+          isFetching: true
+        }
       });
+
       setTimeout(() => {
         this.update_data({
           storeName: "searchStore",
-          data: { isFetching: false }
+          data: {
+            isFetching: false,
+            city_id: this.search_city,
+            tag_id: this.search_tag,
+            search_key: this.search_key
+          }
+        });
+        this.getData_byFirebase({
+          storeName: "searchStore",
+          route: `search/${this.search_city}`,
+          listName: "search_list"
         });
       }, 1000);
-      // db.ref("/comment/qaz0001")
+
+      // db
+      //   .ref("/detail/qaz0008")
       //   .set({
-      //     data: [
-      //       {
-      //         id: "0",
-      //       },
-      //     ]
+      //     data: {
+      //       name: "韓金館",
+      //       address: "10491台北市中山區林森北路119巷68號",
+      //       photo_urls: ["spot_7.jpg", "spot_7.jpg", "spot_7.jpg"],
+      //       rate: 5,
+      //       center: { lat: 25.0500785, lng: 121.5252875 },
+      //       tag: "korea_food",
+      //       phone: "(02)1234-5678",
+      //       open_time: "11:00～20:00(L.O.19:30)",
+      //       off_day: "禮拜天公休"
+      //     }
       //   })
       //   .then(function() {
       //     alert("建立成功");
@@ -184,13 +234,55 @@ export default {
     this.detectWidth();
     window.addEventListener("resize", this.detectWidth);
 
-    if (this.$route.query.hasOwnProperty("tag"))
+    this.search_key = "";
+    const query = { ...this.$route.query };
+    if (this.$route.query.hasOwnProperty("tag")) {
       this.search_tag = this.$route.query.tag;
-    if (this.$route.query.hasOwnProperty("city"))
+    } else {
+      this.search_tag = "sushi";
+      this.$router.replace({
+        path: "search",
+        query: Object.assign(query, { tag: "sushi" })
+      });
+    }
+    if (this.$route.query.hasOwnProperty("city")) {
       this.search_city = this.$route.query.city;
+    } else {
+      this.search_city = "A";
+      this.$router.replace({
+        path: "search",
+        query: Object.assign(query, { city: "A" })
+      });
+    }
+
+    this.getData_byFirebase({
+      storeName: "searchStore",
+      route: `search/${this.search_city}`,
+      listName: "search_list"
+    });
+
+    this.update_data({
+      storeName: "searchStore",
+      data: {
+        city_id: this.search_city,
+        tag_id: this.search_tag,
+        search_key: ""
+      }
+    });
   },
   destroyed() {
     window.removeEventListener("resize", this.detectWidth);
+  },
+  watch: {
+    search_filter_list() {
+      if (process.browser) {
+        if (this.search_filter_list.length)
+          this.center = this.search_filter_list[0].center;
+        // this.$refs.mapRef.$mapPromise.then(map => {
+        //   map.panTo(this.search_filter_list[0].center);
+        // });
+      }
+    }
   }
 };
 </script>
@@ -262,6 +354,10 @@ export default {
         .spot-desc {
           padding: 8px 16px;
           background-color: #c8dad3;
+          .spot-title {
+            color: initial;
+            cursor: pointer;
+          }
           .location {
             margin-bottom: 8px;
             font-weight: bold;
@@ -280,6 +376,10 @@ export default {
             margin-left: auto;
           }
         }
+      }
+      .search-result-noData {
+        padding: 10px 0;
+        text-align: center;
       }
     }
   }

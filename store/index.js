@@ -6,7 +6,9 @@ export const state = () => ({
   classify_info: [],
   searchBar_flag: false,
   locales: ["zh_tw", "en"],
-  locale: "zh_tw"
+  locale: "zh_tw",
+  search_key: "",
+  city_id: "A"
 });
 
 export const getters = {

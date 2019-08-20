@@ -2,20 +2,20 @@
   <div class="detail-page">
     <section class="mainTitle-frame container py-4">
       <div class="title-block mb-3">
-        <h3 class="title-name mb-0 mr-5">測試用123456我是店名</h3>
+        <h3 class="title-name mb-0 mr-5">{{format_detail.name}}</h3>
         <div class="title-rate">
-          <a-rate :defaultValue="1" allowHalf disabled />(1/5)
+          <a-rate :value="format_detail.rate" allowHalf disabled />({{format_detail.rate}}/5)
         </div>
       </div>
       <div class="title-desc">
         <a-icon class="mr-1" type="compass" />
-        <span>我只是地址我只是地址我只是地址我只是地址</span>
+        <span>{{format_detail.address}}</span>
       </div>
     </section>
     <section class="detail-frame container">
       <div class="row">
         <div class="detail-main-panel col-lg-8 py-3">
-          <div class="carousel-block">
+          <div class="carousel-block" v-if="isClient">
             <carousel
               :per-page="1"
               :autoplay="true"
@@ -23,11 +23,8 @@
               :pagination-padding="5"
               :autoplay-timeout="4000"
             >
-              <slide>
-                <img :src="'spot_0.jpg'" />
-              </slide>
-              <slide>
-                <img :src="'spot_0.jpg'" />
+              <slide v-for="(item,index) in format_detail.photo_urls" :key="index">
+                <img :src="item" />
               </slide>
             </carousel>
           </div>
@@ -103,7 +100,21 @@
         <div class="detail-info-panel col-lg-4 py-3">
           <div class="blocks location-block pb-3">
             <div class="detail-title">店家位置</div>
-            <div class="location"></div>
+            <div class="location">
+              <GmapMap
+                ref="mapRef"
+                :center="format_detail.center"
+                :zoom="13"
+                map-type-id="roadmap"
+                style="width: 100%; height: 100%"
+              >
+                <GmapMarker
+                  :position="format_detail.center"
+                  :clickable="true"
+                  :draggable="true"
+                />
+              </GmapMap>
+            </div>
           </div>
           <div class="blocks basicInfo-block pb-3">
             <div class="detail-title">基本資訊</div>
@@ -112,22 +123,22 @@
                 <tr>
                   <td>類型</td>
                   <td>
-                    <a-tag color="rgb(252,190,88)">壽司</a-tag>
+                    <a-tag color="rgb(252,190,88)">{{format_detail.tag}}</a-tag>
                   </td>
                 </tr>
                 <tr>
                   <td>電話</td>
                   <td class="d-flex align-items-center">
-                    <a-icon type="phone" />+886 983-783-081
+                    <a-icon type="phone" />{{format_detail.phone}}
                   </td>
                 </tr>
                 <tr>
                   <td>營業時間</td>
-                  <td>11:00～20:00(L.O.19:30)</td>
+                  <td>{{format_detail.open_time}}</td>
                 </tr>
                 <tr>
                   <td>公休日</td>
-                  <td>禮拜天公休</td>
+                  <td>{{format_detail.off_day}}</td>
                 </tr>
               </tbody>
             </table>
@@ -197,7 +208,11 @@ export default {
   computed: {
     ...mapState(["spots_info", "classify_info"]),
     ...mapState("areaList", ["city"]),
-    ...mapState("commentStore", ["comment_list"])
+    ...mapState("commentStore", ["comment_list"]),
+    ...mapGetters("commentStore", ["format_detail"]),
+    isClient() {
+      return process.browser;
+    }
 
     // ...mapState([{ spots_info: "spots_info" }])
     // ...mapState("layoutStore", ["list"])
@@ -261,6 +276,12 @@ export default {
         route: `/comment/${this.$route.query.r_id}`,
         listName: "comment_list"
       });
+      if (this.$route.query.r_id)
+        this.getData_byFirebase({
+          storeName: "commentStore",
+          route: `detail/${this.$route.query.r_id}`,
+          listName: "detail"
+        });
     }
   },
   mounted() {},
@@ -334,11 +355,15 @@ export default {
           tbody tr {
             display: flex;
             margin-bottom: 2px;
+            min-height: 34px;
             td:first-child {
               min-width: 100px;
               font-weight: bold;
+              line-height: 32px;
             }
             td:last-child {
+              display: flex;
+              align-items: center;
               width: 100%;
             }
           }
@@ -357,9 +382,13 @@ export default {
       }
       .location-block {
         .location {
+          position: relative;
           width: 100%;
           padding-bottom: 100%;
           background: pink;
+          .vue-map-container {
+            position: absolute;
+          }
         }
       }
       .basicInfo-block {
