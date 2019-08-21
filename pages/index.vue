@@ -37,7 +37,7 @@
               </div>
             </div>
           </div>
-          <div class="col-md-4 py-4">
+          <!-- <div class="col-md-4 py-4">
             <div class="trend-block top-area">
               <div class="trend-header">本週熱門 hashtag</div>
               <div class="item-box" v-for="(item, key) in hashtagList" :key="key">
@@ -51,7 +51,7 @@
                 <a href="#">📌 {{item.location}}</a>
               </div>
             </div>
-          </div>
+          </div>-->
         </div>
       </div>
     </section>
