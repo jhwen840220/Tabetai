@@ -122,7 +122,7 @@
                   <td>
                     <a-tag
                       color="rgb(252,190,88)"
-                    >{{tag.length ? tag.filter(item =>item.code == format_detail.tag)[0].name : ''}}</a-tag>
+                    >{{tag.length && format_detail.tag ? tag.filter(item =>item.code == format_detail.tag)[0].name : ''}}</a-tag>
                   </td>
                 </tr>
                 <tr>
