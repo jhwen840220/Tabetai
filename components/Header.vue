@@ -7,11 +7,18 @@
     </nuxt-link>
     <div :class="`searchBar ${!searchBar_flag?'hidden':''}`" v-if="searchBar_hide">
       <div class="input-group input-group-sm">
-        <input type="text" class="form-control" placeholder="請輸入關鍵字" />
+        <input
+          type="text"
+          class="form-control"
+          placeholder="請輸入關鍵字"
+          :value="header_search_key"
+          @change="changeKey"
+        />
         <div class="input-group-append">
           <button
             class="btn btn-outline-secondary d-flex align-items-center justidy-content-center"
             type="button"
+            @click="sendToSearch"
           >
             <a-icon class="mx-1" type="search" />
           </button>
@@ -36,6 +43,7 @@ import { Select, Input, Icon } from "ant-design-vue";
 export default {
   data() {
     return {
+      header_search_key: "",
       searchBar_hide: false,
       menu_flag: false
     };
@@ -45,6 +53,9 @@ export default {
     [Icon.name]: Icon
   },
   methods: {
+    ...mapActions({
+      update_data: "basicAction/update_data"
+    }),
     detectWidth() {
       if (document.body.clientWidth <= 768) {
         this.searchBar_hide = false;
@@ -55,6 +66,17 @@ export default {
       element.scrollIntoView({ behavior: "smooth" });
 
       // location.href  = '#firstAnchor';
+    },
+    changeKey(e) {
+      this.header_search_key = e.target.value;
+    },
+    sendToSearch() {
+      this.update_data({
+        data: { search_key: this.header_search_key }
+      });
+      this.$router.push({
+        path: "search"
+      });
     }
   },
   computed: {
