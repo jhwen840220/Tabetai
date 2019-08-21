@@ -13,10 +13,14 @@ export const getters = {
   search_filter_list: state => {
     return state.search_list.filter(item => {
       if (state.search_key.length) {
-        return (
+        if (state.tag_id && state.tag_id != "all") return (
           item.tag == state.tag_id && item.name.indexOf(state.search_key) != -1
         );
-      } else return item.tag == state.tag_id;
+        else return item.name.indexOf(state.search_key) != -1
+      } else {
+        if (state.tag_id && state.tag_id != "all") return item.tag == state.tag_id;
+        else return state.search_list;
+      }
     });
   }
 };

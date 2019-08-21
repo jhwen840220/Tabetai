@@ -4,7 +4,8 @@
       <div class="title-block mb-3">
         <h3 class="title-name mb-0 mr-5">{{format_detail.name}}</h3>
         <div class="title-rate">
-          <a-rate :value="format_detail.rate" allowHalf disabled />({{format_detail.rate}}/5)
+          <a-rate :value="format_detail.rate" allowHalf disabled />
+          ({{format_detail.rate}}/5)
         </div>
       </div>
       <div class="title-desc">
@@ -108,11 +109,7 @@
                 map-type-id="roadmap"
                 style="width: 100%; height: 100%"
               >
-                <GmapMarker
-                  :position="format_detail.center"
-                  :clickable="true"
-                  :draggable="true"
-                />
+                <GmapMarker :position="format_detail.center" :clickable="true" :draggable="true" />
               </GmapMap>
             </div>
           </div>
@@ -123,13 +120,16 @@
                 <tr>
                   <td>類型</td>
                   <td>
-                    <a-tag color="rgb(252,190,88)">{{format_detail.tag}}</a-tag>
+                    <a-tag
+                      color="rgb(252,190,88)"
+                    >{{tag.length ? tag.filter(item =>item.code == format_detail.tag)[0].name : ''}}</a-tag>
                   </td>
                 </tr>
                 <tr>
                   <td>電話</td>
                   <td class="d-flex align-items-center">
-                    <a-icon type="phone" />{{format_detail.phone}}
+                    <a-icon type="phone" />
+                    {{format_detail.phone}}
                   </td>
                 </tr>
                 <tr>
@@ -208,6 +208,7 @@ export default {
   computed: {
     ...mapState(["spots_info", "classify_info"]),
     ...mapState("areaList", ["city"]),
+    ...mapState("tagList", ["tag"]),
     ...mapState("commentStore", ["comment_list"]),
     ...mapGetters("commentStore", ["format_detail"]),
     isClient() {
@@ -270,6 +271,13 @@ export default {
   },
 
   beforeMount() {
+    // 取得tag
+    this.getData_byFirebase({
+      storeName: "tagList",
+      route: "tag",
+      listName: "tag"
+    });
+
     if (this.$route.query.hasOwnProperty("r_id")) {
       this.getData_byFirebase({
         storeName: "commentStore",
@@ -283,6 +291,7 @@ export default {
           listName: "detail"
         });
     }
+    this.update_data({ data: { searchBar_flag: true } });
   },
   mounted() {},
   destroyed() {

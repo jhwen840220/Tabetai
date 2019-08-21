@@ -9,22 +9,27 @@
           <span class="search-filter-title">搜尋條件：</span>
           <div class="search-filter-tags">
             <a-tag color="#f50" class="mb-1" v-if="final_search_key">
-              <a-icon class="mr-1" type="search" />{{final_search_key}}
+              <a-icon class="mr-1" type="search" />
+              {{final_search_key}}
             </a-tag>
             <a-tag color="#2db7f5" class="mb-1" v-if="city_id">
               <a-icon class="mr-1" type="compass" />
               {{city.length ? city.filter(item =>item.code == city_id)[0].name : ''}}
             </a-tag>
-            <a-tag color="#87d068" class="mb-1" v-if="tag_id">
+            <a-tag color="#87d068" class="mb-1" v-if="tag_id && tag_id!='all'">
               <a-icon class="mr-1" type="tags" />
-              {{tag.length ? tag.filter(item =>item.code == tag_id)[0].name : ''}}
+              {{tag.length && tag_id!="all" ? tag.filter(item =>item.code == tag_id)[0].name : ''}}
             </a-tag>
           </div>
         </div>
-        <form class="row" @submit="writeToFirestore" >
+        <form class="row" @submit="writeToFirestore">
           <div class="search-block col-6 mb-2">
             縣市：
-            <a-select :value="search_city" style="width: 100%" @change="(value)=>{changeValue(value,'city')}">
+            <a-select
+              :value="search_city"
+              style="width: 100%"
+              @change="(value)=>{changeValue(value,'city')}"
+            >
               <a-select-option
                 :value="item.code"
                 v-for="(item, key) in city"
@@ -34,7 +39,12 @@
           </div>
           <div class="search-block col-6 mb-2">
             分類：
-            <a-select :value="search_tag" style="width: 100%" @change="(value)=>{changeValue(value,'tag')}">
+            <a-select
+              :value="search_tag"
+              style="width: 100%"
+              @change="(value)=>{changeValue(value,'tag')}"
+            >
+              <a-select-option :value="'all'">全部</a-select-option>
               <a-select-option
                 :value="item.code"
                 v-for="(item, key) in tag"
@@ -44,14 +54,18 @@
           </div>
           <div class="search-block col-9">
             關鍵字：
-            <a-input placeholder="請輸入店家、食物等關鍵字" :value="search_key" @change="(e)=>{this.search_key = e.target.value}" />
+            <a-input
+              placeholder="請輸入店家、食物等關鍵字"
+              :value="search_key"
+              @change="(e)=>{this.search_key = e.target.value}"
+            />
           </div>
           <div class="offset-1 col-2 d-flex justify-content-end align-items-end">
             <div
               class="btn btn-primary btn-sm"
               style="word-break: keep-all;"
-              @click="writeToFirestore">送出
-            </div>
+              @click="writeToFirestore"
+            >送出</div>
           </div>
         </form>
       </div>
@@ -69,8 +83,12 @@
                 </div>
               </nuxt-link>
               <div class="spot-desc">
-                <h5 class="location" :title="item.name">🍽️ 
-                  <nuxt-link :to="`/detail?r_id=${item.r_id}`"><span class="spot-title">{{item.name}}</span></nuxt-link></h5>
+                <h5 class="location" :title="item.name">
+                  🍽️
+                  <nuxt-link :to="`/detail?r_id=${item.r_id}`">
+                    <span class="spot-title">{{item.name}}</span>
+                  </nuxt-link>
+                </h5>
                 <div class="d-flex align-items-start">
                   <!-- <div class="userHead"></div> -->
                   📌
@@ -93,14 +111,14 @@
         map-type-id="roadmap"
         style="width: 100%; height: 100%"
       >
-      <GmapMarker
-        :key="index"
-        v-for="(m, index) in search_filter_list"
-        :position="m.center"
-        :clickable="true"
-        :draggable="true"
-        @click="center=m.center"
-      />
+        <GmapMarker
+          :key="index"
+          v-for="(m, index) in search_filter_list"
+          :position="m.center"
+          :clickable="true"
+          :draggable="true"
+          @click="center=m.center"
+        />
       </GmapMap>
     </div>
   </div>
@@ -138,6 +156,7 @@ export default {
     [Spin.name]: Spin
   },
   computed: {
+    ...mapState({ home_search_key: "search_key" }),
     ...mapState("areaList", ["city"]),
     ...mapState("tagList", ["tag"]),
     ...mapState("searchStore", ["isFetching", "city_id", "tag_id"]),
@@ -158,6 +177,7 @@ export default {
       this[`search_${key}`] = value;
       let query = { ...this.$route.query };
       query[key] = value;
+      if (key == "tag" && value == "all") delete query.tag;
       this.$router.replace({
         path: "search",
         query
@@ -215,35 +235,32 @@ export default {
   },
 
   beforeMount() {
-    const that = this;
     // 取得city
-    that.getData_byFirebase({
+    this.getData_byFirebase({
       storeName: "areaList",
       route: "city",
       listName: "city"
     });
 
     // 取得tag
-    that.getData_byFirebase({
+    this.getData_byFirebase({
       storeName: "tagList",
       route: "tag",
       listName: "tag"
     });
+    this.update_data({ data: { searchBar_flag: true } });
   },
   mounted() {
     this.detectWidth();
     window.addEventListener("resize", this.detectWidth);
 
-    this.search_key = "";
+    this.search_key = this.home_search_key || "";
+
     const query = { ...this.$route.query };
     if (this.$route.query.hasOwnProperty("tag")) {
       this.search_tag = this.$route.query.tag;
     } else {
-      this.search_tag = "sushi";
-      this.$router.replace({
-        path: "search",
-        query: Object.assign(query, { tag: "sushi" })
-      });
+      this.search_tag = "all";
     }
     if (this.$route.query.hasOwnProperty("city")) {
       this.search_city = this.$route.query.city;
@@ -266,7 +283,7 @@ export default {
       data: {
         city_id: this.search_city,
         tag_id: this.search_tag,
-        search_key: ""
+        search_key: this.home_search_key
       }
     });
   },

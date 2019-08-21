@@ -7,12 +7,12 @@
             <div class="search-box">
               <div class="search-group">
                 <div class="title">關鍵字</div>
-                <a-input placeholder="請輸入店家、食物等關鍵字" :value="search_key" @change="changeKey" />
+                <a-input placeholder="請輸入店家、食物等關鍵字" :value="home_search_key" @change="changeKey" />
               </div>
               <div class="search-group">
                 <div class="title">縣市 / 地區</div>
                 <div class="d-flex">
-                  <a-select class="w-100" :value="city_id" @change="selectCity">
+                  <a-select class="w-100" :value="home_city_id" @change="selectCity">
                     <a-select-option
                       :value="item.code"
                       v-for="(item, key) in city"
@@ -33,7 +33,7 @@
                 <a-input placeholder="請輸入 hashtag" />
               </div>-->
               <div class="text-right">
-                <div class="btn btn-primary btn-sm">送出</div>
+                <div class="btn btn-primary btn-sm" @click="sendToSearch">送出</div>
               </div>
             </div>
           </div>
@@ -145,6 +145,8 @@ var initialY = null;
 export default {
   data() {
     return {
+      home_search_key: "",
+      home_city_id: "A",
       latest_flag: false,
       hashtagList: [
         { tagName: "tainan", tagCount: "105" },
@@ -200,10 +202,19 @@ export default {
     },
 
     selectCity(value) {
-      this.update_data({ data: { city_id: value } });
+      this.home_city_id = value;
     },
     changeKey(e) {
-      this.update_data({ data: { search_key: e.target.value } });
+      this.home_search_key = e.target.value;
+    },
+    sendToSearch() {
+      this.update_data({
+        data: { city_id: this.home_city_id, search_key: this.home_search_key }
+      });
+      this.$router.push({
+        path: "search",
+        query: { city: this.home_city_id }
+      });
     },
     startTouch(e) {
       initialX = e.touches[0].clientX;

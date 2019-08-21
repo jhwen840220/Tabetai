@@ -12,13 +12,13 @@ export const state = () => ({
 });
 
 export const getters = {
-  get_spots_info: state => state.spots_info
+  get_spots_info: state => state.spots_info,
 };
 
 export const actions = {
   getStatus({ commit }, status) {
     commit("setStatus", status);
-  }
+  },
   //   refreshToken({ commit }) {
   //     commit("update_data", { storeName: "layoutStore", data: { token: token } });
   //   }

@@ -12,7 +12,6 @@
           <button
             class="btn btn-outline-secondary d-flex align-items-center justidy-content-center"
             type="button"
-            @click="test()"
           >
             <a-icon class="mx-1" type="search" />
           </button>
