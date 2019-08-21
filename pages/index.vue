@@ -4,13 +4,13 @@
       <div class="container">
         <div class="row justify-content-between">
           <div class="col-md-6 py-4 d-flex justify-content-center align-items-center">
-            <div class="search-box">
+            <form class="search-box" @submit="sendToSearch">
               <div class="search-group">
-                <div class="title">關鍵字</div>
-                <a-input placeholder="請輸入店家、食物等關鍵字" :value="home_search_key" @change="changeKey" />
+                <div class="title">{{$t('keyword')}}</div>
+                <a-input :placeholder="$t('please_enter_keyword')" :value="home_search_key" @change="changeKey" />
               </div>
               <div class="search-group">
-                <div class="title">縣市 / 地區</div>
+                <div class="title">{{$t('city')}} / {{$t('area')}}</div>
                 <div class="d-flex">
                   <a-select class="w-100" :value="home_city_id" @change="selectCity">
                     <a-select-option
@@ -33,9 +33,9 @@
                 <a-input placeholder="請輸入 hashtag" />
               </div>-->
               <div class="text-right">
-                <div class="btn btn-primary btn-sm" @click="sendToSearch">送出</div>
+                <button class="btn btn-primary btn-sm">{{$t('submit')}}</button>
               </div>
-            </div>
+            </form>
           </div>
           <!-- <div class="col-md-4 py-4">
             <div class="trend-block top-area">
@@ -56,7 +56,7 @@
       </div>
     </section>
     <section class="latest-frame container mt-3 wow fadeInUp">
-      <div class="title-block">地區精選</div>
+      <div class="title-block">{{$t('trending_places')}}</div>
       <div class="row">
         <div class="col-sm-12 col-md-6 col-lg-3 p-3" v-for="(item, key) in spots_info" :key="key">
           <div class="spot-block">
@@ -89,7 +89,7 @@
       </div>
     </section>
     <section class="quick-frame container mt-3 wow fadeInUp" id="firstAnchor">
-      <div class="title-block">美食分類</div>
+      <div class="title-block">{{$t('food_categories')}}</div>
       <div class="quick-slide-outer">
         <div class="row quick-slide-inner" :class="{second: isSlide}">
           <div class="quick-slide-panel">
@@ -148,26 +148,7 @@ export default {
       home_search_key: "",
       home_city_id: "A",
       latest_flag: false,
-      hashtagList: [
-        { tagName: "tainan", tagCount: "105" },
-        { tagName: "tainanfoodie", tagCount: "99" },
-        { tagName: "tainanbnb", tagCount: "332" },
-        { tagName: "tainanlunch", tagCount: "1,587" },
-        { tagName: "tainanselfie", tagCount: "9,406" },
-        { tagName: "tainantrip", tagCount: "993" },
-        { tagName: "taiwanfood", tagCount: "22k" },
-        { tagName: "instafood", tagCount: "7,399" },
-        { tagName: "tainanlife", tagCount: "52k" },
-        { tagName: "instadaily", tagCount: "39k" }
-      ],
-      spotNearbyList: [
-        { location: "台江國家公園" },
-        { location: "夕遊出張所" },
-        { location: "四草綠色隧道" },
-        { location: "林默娘公園" },
-        { location: "安平燈塔" }
-      ],
-      isSlide: false // 季節精選區塊是否滑動至右側
+      isSlide: false // 精選區塊是否滑動至右側
     };
   },
   components: {
@@ -207,7 +188,8 @@ export default {
     changeKey(e) {
       this.home_search_key = e.target.value;
     },
-    sendToSearch() {
+    sendToSearch(e) {
+      if (e) e.preventDefault();
       this.update_data({
         data: { city_id: this.home_city_id, search_key: this.home_search_key }
       });
@@ -308,18 +290,18 @@ export default {
 .home-page {
   .title-block {
     display: inline-block;
-    background: #faacd0;
+    background: #4f81c7;
     padding-left: 10px;
     font-weight: 500;
     font-size: 24px;
-    color: rgba(0, 0, 0, 0.85);
+    color: white;
     filter: drop-shadow(3px 3px 3px rgba(0, 0, 0, 0.3));
     &:after {
       content: "";
       position: absolute;
       border-style: solid;
       border-width: 0 25px 36px 0;
-      border-color: transparent transparent #faacd0 transparent;
+      border-color: transparent transparent #4f81c7 transparent;
     }
   }
   i.arrow {
@@ -344,13 +326,15 @@ export default {
     }
     .search-box {
       width: 80%;
-      background-color: #c8dad3;
+      background-color: #f0d78c;
       padding: 16px;
+      border-radius: 8px;
     }
     .search-group {
       margin-bottom: 16px;
       .title {
         margin-bottom: 4px;
+        color: #44000d;
       }
     }
   }
@@ -423,7 +407,7 @@ export default {
       }
       .spot-desc {
         padding: 8px 16px;
-        background-color: #c8dad3;
+        background-color: #64c4ed;
         .spot-title {
           color: initial;
           cursor: pointer;

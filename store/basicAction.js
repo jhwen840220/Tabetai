@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import { db } from "~/plugins/firebase.js";
+import { message } from "ant-design-vue";
 Vue.use(Vuex);
 
 export const actions = {
@@ -61,14 +62,14 @@ export const actions = {
       }
     });
   },
-  pushData_byFirebase({ commit }, { route, postData }) {
+  pushData_byFirebase(test, { route, postData }) {
     db.ref(route)
       .push(postData)
       .then(function() {
-        alert("建立成功");
+        message.success(this.app.i18n.t("add_success"));
       })
-      .catch(function() {
-        alert("伺服器發生錯誤，請稍後再試");
+      .catch(async function() {
+        message.success(this.app.i18n.t("failed"));
       });
   }
 };

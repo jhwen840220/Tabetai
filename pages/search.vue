@@ -6,7 +6,7 @@
     <div class="search-frame">
       <div class="search-filter-frame pb-3">
         <div class="search-filter mb-2">
-          <span class="search-filter-title">搜尋條件：</span>
+          <span class="search-filter-title">{{$t('search_filter')}}：</span>
           <div class="search-filter-tags">
             <a-tag color="#f50" class="mb-1" v-if="final_search_key">
               <a-icon class="mr-1" type="search" />
@@ -24,7 +24,7 @@
         </div>
         <form class="row" @submit="writeToFirestore">
           <div class="search-block col-6 mb-2">
-            縣市：
+            {{$t("city")}}：
             <a-select
               :value="search_city"
               style="width: 100%"
@@ -38,13 +38,13 @@
             </a-select>
           </div>
           <div class="search-block col-6 mb-2">
-            分類：
+            {{$t('category')}}：
             <a-select
               :value="search_tag"
               style="width: 100%"
               @change="(value)=>{changeValue(value,'tag')}"
             >
-              <a-select-option :value="'all'">全部</a-select-option>
+              <a-select-option :value="'all'">{{$t('all')}}</a-select-option>
               <a-select-option
                 :value="item.code"
                 v-for="(item, key) in tag"
@@ -53,9 +53,9 @@
             </a-select>
           </div>
           <div class="search-block col-9">
-            關鍵字：
+            {{$t('keyword')}}：
             <a-input
-              placeholder="請輸入店家、食物等關鍵字"
+              :placeholder="$t('please_enter_keyword')"
               :value="search_key"
               @change="(e)=>{this.search_key = e.target.value}"
             />
@@ -65,7 +65,7 @@
               class="btn btn-primary btn-sm"
               style="word-break: keep-all;"
               @click="writeToFirestore"
-            >送出</div>
+            >{{$t('submit')}}</div>
           </div>
         </form>
       </div>
@@ -100,7 +100,7 @@
             </div>
           </div>
         </div>
-        <div class="search-result-noData" v-else>目前查無資料唷 ~</div>
+        <div class="search-result-noData" v-else>{{$t('no_data')}}</div>
       </div>
     </div>
     <div class="map-frame" v-if="map_visible">
@@ -370,7 +370,7 @@ export default {
         }
         .spot-desc {
           padding: 8px 16px;
-          background-color: #c8dad3;
+          background-color: #64c4ed;
           .spot-title {
             color: initial;
             cursor: pointer;

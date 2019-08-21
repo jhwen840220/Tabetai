@@ -47,39 +47,39 @@
                   </a-tooltip>
                 </a-comment>
                 <div style="margin-left: 44px">
-                  評分:
+                  {{$t('rate')}}:
                   <a-rate :defaultValue="item.rate" allowHalf disabled />
                 </div>
               </a-list-item>
             </a-list>
           </div>
           <div class="add-comment-block py-3">
-            <h4>可在此留下您的評論</h4>
+            <h4>{{$t('write_your_comment')}}</h4>
             <table class="comment-table">
               <tbody>
                 <tr>
-                  <td>訪客名稱</td>
+                  <td>{{$t('your_name')}}</td>
                   <td>
-                    <a-input placeholder="請輸入名稱" v-model="author_value" @change="typeAuthor" />
+                    <a-input :placeholder="$t('please_enter_name')" v-model="author_value" @change="typeAuthor" />
                   </td>
                 </tr>
                 <tr>
-                  <td>性別</td>
+                  <td>{{$t('gender')}}</td>
                   <td>
                     <a-radio-group @change="detectGender" v-model="gender_value">
-                      <a-radio :value="'male'">男生</a-radio>
-                      <a-radio :value="'female'">女生</a-radio>
+                      <a-radio :value="'male'">{{$t('male')}}</a-radio>
+                      <a-radio :value="'female'">{{$t('female')}}</a-radio>
                     </a-radio-group>
                   </td>
                 </tr>
                 <tr>
-                  <td>評分</td>
+                  <td>{{$t('rate')}}</td>
                   <td>
                     <a-rate :defaultValue="0" v-model="rate_value" allowHalf @change="detectRate" />
                   </td>
                 </tr>
                 <tr>
-                  <td>評論</td>
+                  <td>{{$t('comment')}}</td>
                   <td>
                     <a-textarea :rows="4" @change="typeComment" v-model="comment_value"></a-textarea>
                   </td>
@@ -91,7 +91,7 @@
                       class="btn btn-primary btn-sm"
                       style="word-break: keep-all;"
                       @click="onSubmit"
-                    >送出</div>
+                    >{{$t('submit')}}</div>
                   </td>
                 </tr>
               </tbody>
@@ -100,7 +100,7 @@
         </div>
         <div class="detail-info-panel col-lg-4 py-3">
           <div class="blocks location-block pb-3">
-            <div class="detail-title">店家位置</div>
+            <div class="detail-title">{{$t('restarunt_position')}}</div>
             <div class="location">
               <GmapMap
                 ref="mapRef"
@@ -114,11 +114,11 @@
             </div>
           </div>
           <div class="blocks basicInfo-block pb-3">
-            <div class="detail-title">基本資訊</div>
+            <div class="detail-title">{{$t('basic_info')}}</div>
             <table class="basicInfo-table">
               <tbody>
                 <tr>
-                  <td>類型</td>
+                  <td>{{$t('type')}}</td>
                   <td>
                     <a-tag
                       color="rgb(252,190,88)"
@@ -126,18 +126,18 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>電話</td>
+                  <td>{{$t('phone')}}</td>
                   <td class="d-flex align-items-center">
                     <a-icon type="phone" />
                     {{format_detail.phone}}
                   </td>
                 </tr>
                 <tr>
-                  <td>營業時間</td>
+                  <td>{{$t('open_hour')}}</td>
                   <td>{{format_detail.open_time}}</td>
                 </tr>
                 <tr>
-                  <td>公休日</td>
+                  <td>{{$t('off_day')}}</td>
                   <td>{{format_detail.off_day}}</td>
                 </tr>
               </tbody>
@@ -165,7 +165,8 @@ import {
   Tooltip,
   Avatar,
   InputNumber,
-  Radio
+  Radio,
+  message
 } from "ant-design-vue";
 const Option = Select.Option;
 const ListItem = List.Item;
@@ -246,10 +247,10 @@ export default {
         datetime: this.moment().format("YYYY-MM-DD HH:mm:ss")
       };
 
-      if (!postData.author) return alert("請輸入名稱唷QAQ");
-      if (!postData.gender) return alert("請選擇性別唷QAQ");
-      if (!postData.rate) return alert("請選擇評分唷QAQ");
-      if (!postData.comment) return alert("請輸入評論唷QAQ");
+      if (!postData.author) return message.error(this.$t("validate_name"));
+      if (!postData.gender) return message.error(this.$t("validate_gender"));
+      if (!postData.rate) return message.error(this.$t("validate_rate"));
+      if (!postData.comment) return message.error(this.$t("validate_comment"));
 
       /** 送出評論 */
       this.pushData_byFirebase({
@@ -331,7 +332,7 @@ export default {
       }
       .carousel-block {
         .VueCarousel-wrapper {
-          background: #fff;
+          background: #f0d78c;
           .VueCarousel-slide {
             display: flex;
             align-items: center;
@@ -394,7 +395,7 @@ export default {
           position: relative;
           width: 100%;
           padding-bottom: 100%;
-          background: pink;
+          background: #f0d78c;
           .vue-map-container {
             position: absolute;
           }

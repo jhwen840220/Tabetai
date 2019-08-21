@@ -6,7 +6,7 @@
       </div>
     </nuxt-link>
     <div :class="`searchBar ${!searchBar_flag?'hidden':''}`" v-if="searchBar_hide">
-      <div class="input-group input-group-sm">
+      <form class="input-group input-group-sm" @submit="sendToSearch">
         <input
           type="text"
           class="form-control"
@@ -17,13 +17,11 @@
         <div class="input-group-append">
           <button
             class="btn btn-outline-secondary d-flex align-items-center justidy-content-center"
-            type="button"
-            @click="sendToSearch"
           >
             <a-icon class="mx-1" type="search" />
           </button>
         </div>
-      </div>
+      </form>
     </div>
     <div class="menuToggle" :class="{opened: menu_flag}" @click="menu_flag=!menu_flag">
       <span />
@@ -31,8 +29,7 @@
       <span />
     </div>
     <div class="btnGroup" :class="{opened: menu_flag}">
-      <div class="btn">登入</div>
-      <div class="btn">註冊</div>
+      <div class="btn" @click="changeLang">{{locale=="zh_TW"?"Eng":"中"}}</div>
     </div>
   </div>
 </template>
@@ -40,6 +37,8 @@
 <script>
 import { mapState, mapGetters, mapActions } from "vuex";
 import { Select, Input, Icon } from "ant-design-vue";
+import { getCookie, setCookie } from "~/helpers";
+
 export default {
   data() {
     return {
@@ -70,21 +69,36 @@ export default {
     changeKey(e) {
       this.header_search_key = e.target.value;
     },
-    sendToSearch() {
-      this.update_data({
-        data: { search_key: this.header_search_key }
-      });
-      this.$router.push({
-        path: "search"
-      });
+    sendToSearch(e) {
+      if (e) e.preventDefault();
+      if (this.header_search_key.length) {
+        this.update_data({
+          data: { search_key: this.header_search_key }
+        });
+        this.$router.push({
+          path: "search"
+        });
+      }
+    },
+    changeLang() {
+      const lang = getCookie("lang");
+
+      if (lang == "en") setCookie("lang", "zh_TW");
+      else setCookie("lang", "en");
+
+      this.update_data({ data: { locale: getCookie("lang") } });
+      this.$root.$i18n.locale = getCookie("lang");
     }
   },
   computed: {
-    ...mapState(["searchBar_flag"])
+    ...mapState(["searchBar_flag", "locale"])
   },
   mounted() {
     this.detectWidth();
     window.addEventListener("resize", this.detectWidth);
+
+    this.update_data({ data: { locale: getCookie("lang") } });
+    this.$root.$i18n.locale = getCookie("lang");
   },
   destroyed() {
     window.removeEventListener("resize", this.detectWidth);
@@ -99,7 +113,7 @@ export default {
   width: 100%;
   height: 60px;
   padding: 0 24px;
-  background-color: #c8dad3;
+  background-color: #64c4ed;
   display: flex;
   align-items: center;
   z-index: 100;
@@ -123,7 +137,8 @@ export default {
       );
       background-clip: text;
       -webkit-background-clip: text;
-      color: #ffb422; // 沒辦法漸層的瀏覽器
+      color: #ffb422;
+      // 沒辦法漸層的瀏覽器
       -webkit-text-fill-color: transparent;
     }
   }
@@ -139,11 +154,16 @@ export default {
     margin-left: auto;
     .btn {
       cursor: pointer;
-      border-radius: 20px;
-      background-color: #63707e;
-      color: #fff;
+      border-radius: 10px;
+      background-color: #407088;
+      box-shadow: 1px 1px 8px 2px #042f4b;
+      color: white;
       text-align: center;
-      padding: 6px 18px;
+      padding: 4px 15px;
+      &:active {
+        transform: translate(1px, 1px);
+        box-shadow: 0px 0px 8px 0 #042f4b;
+      }
     }
   }
   @media (max-width: 768px) {
@@ -170,7 +190,7 @@ export default {
         }
       }
       &.opened {
-        height: 110px;
+        height: 55px;
       }
     }
   }
@@ -189,14 +209,10 @@ export default {
       height: 4px;
       margin-bottom: 5px;
       position: relative;
-
       background: #df8702;
       border-radius: 3px;
-
       z-index: 1;
-
       transform-origin: 4px 0px;
-
       transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1),
         background 0.5s cubic-bezier(0.77, 0.2, 0.05, 1), opacity 0.55s ease;
       &:first-child {
@@ -208,7 +224,6 @@ export default {
     }
     &.opened span {
       opacity: 1;
-
       background: #232323;
       &:last-child {
         transform: rotate(-45deg) translate(-1px, 2px);

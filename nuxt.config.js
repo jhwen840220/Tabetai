@@ -38,7 +38,8 @@ module.exports = {
   plugins: [
     "@/plugins/vue2-google-maps",
     "@/plugins/firebase",
-    { src: "@/plugins/vue-carousel.js", ssr: false }
+    { src: "@/plugins/vue-carousel.js", ssr: false },
+    "@/plugins/i18n"
   ],
   /*
    ** Nuxt.js dev-modules
@@ -62,7 +63,7 @@ module.exports = {
     /*
      ** You can extend webpack config here
      */
-    extend(config, ctx) { },
+    extend(config, ctx) {},
     transpile: [/^vue2-google-maps($|\/)/]
   }
 };

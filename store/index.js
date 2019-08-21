@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import { getCookie } from "~/helpers";
 Vue.use(Vuex);
 export const state = () => ({
   spots_info: [],
@@ -12,13 +13,13 @@ export const state = () => ({
 });
 
 export const getters = {
-  get_spots_info: state => state.spots_info,
+  get_spots_info: state => state.spots_info
 };
 
 export const actions = {
   getStatus({ commit }, status) {
     commit("setStatus", status);
-  },
+  }
   //   refreshToken({ commit }) {
   //     commit("update_data", { storeName: "layoutStore", data: { token: token } });
   //   }
