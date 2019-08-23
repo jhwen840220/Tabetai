@@ -370,7 +370,7 @@ export default {
         }
         .spot-desc {
           padding: 8px 16px;
-          background-color: #64c4ed;
+          background-color: #c8dad3;
           .spot-title {
             color: initial;
             cursor: pointer;

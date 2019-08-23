@@ -326,7 +326,7 @@ export default {
     }
     .search-box {
       width: 80%;
-      background-color: #f0d78c;
+      background-color: #c8e6f5;
       padding: 16px;
       border-radius: 8px;
     }
@@ -334,7 +334,10 @@ export default {
       margin-bottom: 16px;
       .title {
         margin-bottom: 4px;
-        color: #44000d;
+        color: white;
+        text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+        font-size: 1.25rem;
+        font-weight: bold;
       }
     }
   }
@@ -378,6 +381,8 @@ export default {
       background-color: #fff;
       transform: scale(1);
       transition: transform 0.5s;
+      box-shadow: 0px 2px 10px 1px #888888;
+      border-radius: 10px;
       .spot-img {
         width: 100%;
         padding-top: 100%;
@@ -407,7 +412,8 @@ export default {
       }
       .spot-desc {
         padding: 8px 16px;
-        background-color: #64c4ed;
+        background-color: #c8dad3;
+        border-radius: 0 0 10px 10px;
         .spot-title {
           color: initial;
           cursor: pointer;
@@ -495,14 +501,17 @@ export default {
     .spot-block {
       &:hover {
         transform: scale(1.1);
-        .spot-img:after {
-          content: "";
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: rgba(255, 255, 255, 0.5);
+      }
+      .spot-desc {
+        h5 {
+          &:hover {
+            color: #fb646f;
+          }
+          .spot-title {
+            &:hover {
+              color: #fb646f;
+            }
+          }
         }
       }
     }

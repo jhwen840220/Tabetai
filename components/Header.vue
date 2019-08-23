@@ -16,7 +16,7 @@
         />
         <div class="input-group-append">
           <button
-            class="btn btn-outline-secondary d-flex align-items-center justidy-content-center"
+            class="btn btn-info d-flex align-items-center justidy-content-center"
           >
             <a-icon class="mx-1" type="search" />
           </button>
@@ -29,7 +29,7 @@
       <span />
     </div>
     <div class="btnGroup" :class="{opened: menu_flag}">
-      <div class="btn" @click="changeLang">{{locale=="zh_TW"?"Eng":"中"}}</div>
+      <div class="btn btn-info" @click="changeLang">{{locale=="zh_TW"?"Eng":"中"}}</div>
     </div>
   </div>
 </template>
@@ -113,7 +113,7 @@ export default {
   width: 100%;
   height: 60px;
   padding: 0 24px;
-  background-color: #64c4ed;
+  background-color: rgba(0, 0, 0, 0.75);
   display: flex;
   align-items: center;
   z-index: 100;
@@ -155,7 +155,6 @@ export default {
     .btn {
       cursor: pointer;
       border-radius: 10px;
-      background-color: #407088;
       box-shadow: 1px 1px 8px 2px #042f4b;
       color: white;
       text-align: center;
