@@ -1,6 +1,6 @@
-# i-collector
+# Tabetai
 
-> My scrumtrulescent Nuxt.js project
+> link: http://34.68.199.227/
 
 ## Build Setup
 
