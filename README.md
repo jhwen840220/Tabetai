@@ -1,6 +1,6 @@
 # Tabetai
 
-> link: http://34.68.199.227/
+> [Demo](http://34.68.199.227/)
 
 ## Build Setup
 
